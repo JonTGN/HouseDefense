@@ -8,7 +8,7 @@ public class DeathCube : EnemyClass
     protected override void Awake()
     {
         base.Awake();
-        StartCoroutine(Death());
+        //StartCoroutine(Death());
     }
 
     public void damage(int amount)
