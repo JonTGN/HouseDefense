@@ -18,21 +18,60 @@ public class EnemyClass : MonoBehaviour
     [SerializeField]
     protected int health;
 
-    protected virtual void takeDamage(int amount)
-    {
-        Debug.Log($"{gameObject.name} has recieved {amount} damage!");
-        health -= amount;
-    }
-
-    protected virtual void healDamage(int amount)
-    {
-        Debug.Log($"{gameObject.name} has healed {amount} damage!");
-        health += amount;
-    }
+    #region Abstract Methods
 
     protected virtual void Awake()
     {
         health = startingHealth;
     }
+
+    #endregion
+
+    #region Methods
+
+    public void Damage(int amount)
+    {
+        Debug.Log($"{gameObject.name} has recieved {amount} damage!");
+        health = Mathf.Max(0, health - amount);
+
+        EvaluateHealth();
+    }
+
+    public void Heal(int amount)
+    {
+        Debug.Log($"{gameObject.name} has healed {amount} damage!");
+        health = Mathf.Min(startingHealth, health + amount);
+    }
+
+    public int CheckHealth()
+    {
+        return health;
+    }
+
+    void EvaluateHealth()
+    {
+        if(health <= 0)
+            Die();
+    }
+
+    public void Die()
+    {
+        Debug.Log($"{gameObject.name} has died.");
+        Destroy(gameObject);
+    }
+
+    #endregion
+
+    #region IEnumerators
+
+    IEnumerator Death()
+    {
+        Debug.Log($"{gameObject.name} will die in (5) seconds.");
+        yield return new WaitForSeconds(5);
+        Die();
+    }
+
+    #endregion
+
 
 }
