@@ -9,7 +9,12 @@ public class DamageOnClick : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
-            GameObject.Find("Test Enemy").GetComponent<DeathCube>().damage(10);
+            GameObject.Find("Test Enemy").GetComponent<DeathCube>().Damage(10);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            GameObject.Find("Test Player").GetComponent<PlayerTestScript>().Damage(10);
         }
     }
 }
