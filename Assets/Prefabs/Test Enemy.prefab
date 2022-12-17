@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5359130962617997145}
   - component: {fileID: 5359130962617997146}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Test Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyName: fred
-  startingHealth: 10
+  startingHealth: 20
   moveSpeed: 0
   health: 0
 --- !u!1 &5359130962729317222
@@ -61,9 +61,9 @@ GameObject:
   - component: {fileID: 5359130962729317218}
   - component: {fileID: 5359130962729317217}
   - component: {fileID: 5359130962729317216}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemyTransform
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

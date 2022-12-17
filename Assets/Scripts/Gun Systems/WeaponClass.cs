@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class WeaponClass : MonoBehaviour
 {
-    [Header("Player Reference")]
-    public Transform playerGunningPosition;
 
     [Header("Gun Stats")]
     public int damage;
@@ -31,9 +29,6 @@ public class WeaponClass : MonoBehaviour
     public float camShakeMagnitude, camShakeDuration;
     public TextMeshProUGUI text;
 
-
-    private bool IsControlled;
-
     private void Awake()
     {
         bulletsLeft = magazineSize;
@@ -45,7 +40,7 @@ public class WeaponClass : MonoBehaviour
         //if (!(PlayerController is null))
         //{
         //    //tText
-        //    text.SetText(bulletsLeft + " / " + magazineSize);
+        text.SetText(bulletsLeft + " / " + magazineSize);
         //}
 
         //Debug.Log("Subscribe() Called");
@@ -92,14 +87,21 @@ public class WeaponClass : MonoBehaviour
             //Calculate Direction with Spread
             Vector3 direction = fpsCam.transform.forward + new Vector3(x, y, 0);
 
+            Debug.DrawRay(fpsCam.transform.position, direction *  range);
             //Raycast
             if (Physics.Raycast(fpsCam.transform.position, direction, out rayHit, range, whatIsEnemy))
             {
                 Debug.Log(rayHit.collider.name);
 
-                //if (rayHit.collider.CompareTag("Enemy"))
-                //Modify this!
-                //rayHit.collider.GetComponent<ArmorHealth>().takeDamage(damage);
+                if(rayHit.collider.CompareTag("Enemy"))
+                {
+                    // Modify this!
+                    rayHit.collider.gameObject.GetComponentInParent<EnemyClass>().Damage(damage);
+
+                    //Graphics
+                    Instantiate(bulletsHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
+                }
+                   
 
             }
 
@@ -109,8 +111,8 @@ public class WeaponClass : MonoBehaviour
             StartCoroutine(camShake.Shake(camShakeDuration, camShakeMagnitude));
 
             //Graphics
-            Instantiate(bulletsHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
-            Instantiate(muzzleFlash, attackPoint.position, attackPoint.rotation);
+            //Instantiate(bulletsHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
+            //Instantiate(muzzleFlash, attackPoint.position, attackPoint.rotation);
 
             bulletsLeft--;
             bulletsShot--;
@@ -137,27 +139,3 @@ public class WeaponClass : MonoBehaviour
 
 }
 
-public class CameraShake : MonoBehaviour
-{
-    public IEnumerator Shake(float duration, float magnitude)
-    {
-
-        Vector3 orignialPos = transform.localPosition;
-
-        float elapsed = 0.0f;
-
-        while (elapsed < duration)
-        {
-            float x = Random.Range(-.25f, .25f) * magnitude;
-            float y = Random.Range(-.25f, .25f) * magnitude;
-
-            transform.localPosition = transform.localPosition + new Vector3(x, y, 0);
-
-            elapsed += Time.deltaTime;
-            //Debug.Log($"OriginalPos: {orignialPos} || New Position: {transform.localPosition}");
-            yield return null;
-        }
-
-        transform.localPosition = orignialPos;
-    }
-}

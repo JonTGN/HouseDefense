@@ -25,7 +25,7 @@ public class Director : MonoBehaviour
         if (Enemy != null)
             return;
 
-        GameObject spawnedEnemy = Instantiate(EnemyPrefab, Player.transform.position + new Vector3(0, 0, 8), Quaternion.identity);
+        GameObject spawnedEnemy = Instantiate(EnemyPrefab, Player.transform.position + new Vector3(0, 0.75f, 8), Quaternion.identity);
         Enemy = spawnedEnemy.GetComponent<DeathCube>();         
     }
 

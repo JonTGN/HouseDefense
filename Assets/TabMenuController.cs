@@ -9,6 +9,8 @@ public class TabMenuController : MonoBehaviour
     [SerializeField]
     public GameObject TabMenu;
 
+    public WeaponClass Weapon;
+
     private void Awake()
     {
         TabMenu.SetActive(false);
@@ -19,6 +21,9 @@ public class TabMenuController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Tab))
         {
             TabMenu.SetActive(!TabMenu.activeSelf);
+            
+            Weapon.enabled = !TabMenu.activeSelf;
+
         }
     }
 }
