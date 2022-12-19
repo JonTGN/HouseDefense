@@ -3248,15 +3248,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 682ad7656ebb80843a3a7abb983731ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaveSize: 45
-  WaveStrength: 45
+  Round: 1
+  WaveSize: 0
+  WaveStrength: 0
+  WaveModifier: 0
   Enemies: []
   Player: {fileID: 1687724714}
-  PopulateWave: 1
+  PopulateWave: 0
   EnemyPrefab: {fileID: 5359130962617997144, guid: 1e5ac50a12146d84384ad55208121352,
     type: 3}
-  spawnWidth: 20
-  spawnLength: 6
+  spawnWidth: 35
+  spawnLength: 10
 --- !u!4 &2114759540
 Transform:
   m_ObjectHideFlags: 0
