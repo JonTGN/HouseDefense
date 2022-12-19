@@ -18,11 +18,15 @@ public class EnemyClass : MonoBehaviour
     [SerializeField]
     protected int health;
 
+    [SerializeField]
+    protected Director LevelManager;
+
     #region Abstract Methods
 
     protected virtual void Awake()
     {
         health = startingHealth;
+        LevelManager = GameObject.Find("LevelManager").GetComponent<Director>();
     }
 
     #endregion
@@ -57,7 +61,13 @@ public class EnemyClass : MonoBehaviour
     public void Die()
     {
         Debug.Log($"{gameObject.name} has died.");
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        NotifyOfDeath();
+    }
+
+    private void NotifyOfDeath()
+    {
+        LevelManager.RemoveEnemy(this);
     }
 
     #endregion
