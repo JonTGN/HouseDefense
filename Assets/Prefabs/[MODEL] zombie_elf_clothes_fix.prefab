@@ -1622,7 +1622,7 @@ GameObject:
   - component: {fileID: 5681739127233370295}
   - component: {fileID: 5283618323917013078}
   m_Layer: 0
-  m_Name: zombie_elf_clothes_fix
+  m_Name: '[MODEL] zombie_elf_clothes_fix'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1637,7 +1637,7 @@ Transform:
   m_GameObject: {fileID: 5013147463014318605}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.493664, y: 0.015005469, z: 12.178193}
-  m_LocalScale: {x: 0.0098, y: 0.0098, z: 0.0098}
+  m_LocalScale: {x: 0.009, y: 0.009, z: 0.009}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3632508176894855209}
