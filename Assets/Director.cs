@@ -142,9 +142,9 @@ public class Director : MonoBehaviour
         Player.Heal(10);
     }
 
-    public void DamagePlayer()
+    public void DamagePlayer(int amount)
     {
-        Player.Damage(10);
+        Player.Damage(amount);
     }
 
     public void QuitGame()
