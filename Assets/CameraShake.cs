@@ -1,28 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class CameraShake : MonoBehaviour
 {
-    public IEnumerator Shake(float duration, float magnitude)
+    [SerializeField] private CinemachineVirtualCamera cam;
+    [SerializeField] private float freq = 0.5f;
+    private float shakeTimer;
+    private float shakeTimerTotal;
+    private float startingIntensity;
+    private CinemachineBasicMultiChannelPerlin mcp;
+
+    private void Awake()
     {
+        mcp = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+    }
 
-        Vector3 orignialPos = transform.localPosition;
+    public void Shake(float duration, float magnitude)
+    {
+        mcp.m_AmplitudeGain = magnitude;
+        mcp.m_FrequencyGain = freq;
+        startingIntensity = magnitude;
+        shakeTimer = duration;
+        shakeTimerTotal = duration;
+    }
 
-        float elapsed = 0.0f;
-
-        while (elapsed < duration)
+    private void Update()
+    {
+        if (shakeTimer > 0) 
         {
-            float x = Random.Range(-.25f, .25f) * magnitude;
-            float y = Random.Range(-.25f, .25f) * magnitude;
+            shakeTimer -= Time.deltaTime;
 
-            transform.localPosition = transform.localPosition + new Vector3(x, y, 0);
+            mcp.m_AmplitudeGain = Mathf.Lerp(startingIntensity, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
+            mcp.m_FrequencyGain = Mathf.Lerp(freq, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
 
-            elapsed += Time.deltaTime;
-            //Debug.Log($"OriginalPos: {orignialPos} || New Position: {transform.localPosition}");
-            yield return null;
+            
+            
         }
-
-        transform.localPosition = orignialPos;
     }
 }
