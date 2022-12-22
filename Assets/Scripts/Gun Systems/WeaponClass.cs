@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Cinemachine;
+using StarterAssets;
 
 public class WeaponClass : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class WeaponClass : MonoBehaviour
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
 
-    bool readyToShoot, reloading, aiming;
+    bool readyToShoot, reloading, aiming, running, playingDryFireAnim = false, playedAimSound = false;
     
     // expose for shell eject script
     public bool shooting;
@@ -29,10 +30,14 @@ public class WeaponClass : MonoBehaviour
     public CinemachineVirtualCamera fpsCam;
     public Camera rayCam;  // for some reason fpsCam shoots raycast in front at all times?
     public RaycastHit rayHit;
+    public FirstPersonController plr;
     public LayerMask whatIsEnemy;
     public CameraShake cameraShake;
-    public AudioSource audioSource;
-    public AudioClip audio_fire;
+    public AudioSource audio_fire;
+    public AudioSource audio_reload;
+    public AudioSource audio_aim;
+    public AudioSource audio_dry_fire;
+
 
     [Header("Graphics")]
     public GameObject muzzleFlash1;
@@ -61,8 +66,13 @@ public class WeaponClass : MonoBehaviour
             Reload();
 
         // if aiming
-        else if (Input.GetKey(KeyCode.Mouse1) && !reloading)
+        else if (Input.GetKey(KeyCode.Mouse1) && !reloading && !running)
         {
+            if (!playedAimSound)
+            {
+                audio_aim.Play();
+                playedAimSound = true;
+            }
             aiming = true;
             Aim();
         }
@@ -71,6 +81,7 @@ public class WeaponClass : MonoBehaviour
         else
         {
             aiming = false;
+            playedAimSound = false;
 
             // reset camera fov after done aiming
             fpsCam.m_Lens.FieldOfView = Mathf.Lerp(fpsCam.m_Lens.FieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
@@ -78,7 +89,7 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if shooting automatic weapon with bullets in clip
-        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && !reloading)
+        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && !reloading && !running)
         {
             if (bulletsLeft > 0)
             {
@@ -104,6 +115,7 @@ public class WeaponClass : MonoBehaviour
             else if (bulletsLeft <= 0)
             {
                 shooting = false;
+                
                 DryFire();
                 //Reload();
             }
@@ -111,7 +123,7 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if shooting semi-auto weapon with bullets in clip
-        else if (Input.GetKeyDown(KeyCode.Mouse0) && !reloading)
+        else if (Input.GetKeyDown(KeyCode.Mouse0) && !reloading && !running)
         {
             if (bulletsLeft > 0)
             {
@@ -139,11 +151,45 @@ public class WeaponClass : MonoBehaviour
             }
         }
 
-        // if not aiming and not reloading
+        // play jump anim if not already reloading
+        else if (plr._input.jump && !reloading && !plr.Grounded)
+        {
+            PlayAnim("Jump");
+        }
+
+        // Is sprinting -> +1 because there is acceleration
+        else if (plr._speed > plr.MoveSpeed + 1 && !reloading && plr.Grounded)
+        {
+            // play run anim
+            PlayAnim("FastMove");
+
+            running = true;
+
+            // while you can shoot and move, both anims will not play
+            shooting = false;
+        }
+
+        // Movement anims
+        else if (plr._speed > 0 && !reloading && plr.Grounded)
+        {
+            if (aiming)
+                PlayAnim("ZoomMove");
+            
+            else
+                PlayAnim("Move");
+
+            running = false;
+
+            shooting = false;
+        }
+
+        // if not aiming and not reloading be idle
         else if (!aiming && !reloading)
         {
             shooting = false;
             ResetShot();
+
+            running = false;
         }
 
         // if aiming and not shooting
@@ -154,9 +200,6 @@ public class WeaponClass : MonoBehaviour
 
     }
 
-    /*
-     * 
-     */
     private void Aim()
     {
         PlayAnim("ZoomIdle");
@@ -167,11 +210,16 @@ public class WeaponClass : MonoBehaviour
     {
         if (bulletsLeft < magazineSize && !reloading && ammoReserve > 0)
         {
+            // sometimes this cancel invoke will clear this value out and keep it true, preventing dry fire anims/sounds
+            playingDryFireAnim = false;
+
             // clear any potential anim resets
             CancelInvoke();
 
             // if aiming clear any anims and don't allow
             aiming = false;
+
+            audio_reload.Play();
 
             // reset camera fov after done aiming
             fpsCam.m_Lens.FieldOfView = Mathf.Lerp(fpsCam.m_Lens.FieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
@@ -269,7 +317,7 @@ public class WeaponClass : MonoBehaviour
 
     private void PlayShotSound()
     {
-        audioSource.Play();
+        audio_fire.Play();
     }
 
     private void ResetShot()
@@ -303,26 +351,44 @@ public class WeaponClass : MonoBehaviour
         reloading = false;
         readyToShoot = true;
     }
-
+    
+    // bug: movement can get stuck in dry fire
     private void DryFire()
     {
-        CancelInvoke();
-
-        // lazy coding, no path from fire to dry fire, can't get bool on zoom fire? always false??
+        Debug.Log("dry fire anim: " + playingDryFireAnim);
+        // No path from fire to dry fire, can't get bool on zoom fire? always false??
         if (anim.GetBool("Fire"))
             PlayAnim("Idle");  
         
-        else if (aiming && !shooting)
+        else if (aiming && !shooting && !playingDryFireAnim)
         {
             PlayAnim("ZoomIdle");
 
-            // still play dry fire sound
+            // still play dry fire sound; anim bool is just timer
+            playingDryFireAnim = true;
+            audio_dry_fire.Play();
+            Invoke("ResetDryFireTimer", 0.4f);
         }
              
-        else
+        else if (!playingDryFireAnim)
         {
             PlayAnim("DryFire");
+
+            playingDryFireAnim = true;
+            audio_dry_fire.Play();
+            Invoke("ResetDryFireTimer", 0.4f);
         } 
+
+        // since aim uses same counter, we can't idle when counter is active
+        else if (!aiming)
+        {
+            PlayAnim("Idle");
+        }
+    }
+
+    private void ResetDryFireTimer()
+    {
+        playingDryFireAnim = false;
     }
     
     private void PlayAnim(string animToSetToTrue)
@@ -333,18 +399,18 @@ public class WeaponClass : MonoBehaviour
         anim.SetBool("ZoomFire", false);
         anim.SetBool("Reload", false);
         anim.SetBool("DryFire", false);
+        anim.SetBool("Move", false);
+        anim.SetBool("FastMove", false);
+        anim.SetBool("ZoomMove", false);
+		anim.SetBool("Jump", false);
 
         // -- todo: -- //
-        anim.SetBool("Move", false);
-		anim.SetBool("ZoomMove", false);
-		anim.SetBool("FastMove", false);
 		anim.SetBool("ReloadLoop", false);
 		anim.SetBool("EndReload", false);
 		anim.SetBool("EmptyReload", false);
 		anim.SetBool("MeleeAttack", false);
 		anim.SetBool("Crouch", false);
 		anim.SetBool("ZoomCrouch", false);
-		anim.SetBool("Jump", false);
 		anim.SetBool("GrenadeThrow", false);
 		anim.SetBool("Select", false);
 

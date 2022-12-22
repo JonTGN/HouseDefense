@@ -55,7 +55,9 @@ namespace StarterAssets
 		private float _cinemachineTargetPitch;
 
 		// player
-		private float _speed;
+		// expose for weapon class
+		public float _speed;
+		public float targetSpeed;
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
@@ -69,7 +71,7 @@ namespace StarterAssets
 		private PlayerInput _playerInput;
 #endif
 		private CharacterController _controller;
-		private StarterAssetsInputs _input;
+		public StarterAssetsInputs _input;
 		private GameObject _mainCamera;
 
 		private const float _threshold = 0.01f;
@@ -154,7 +156,7 @@ namespace StarterAssets
 		private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 

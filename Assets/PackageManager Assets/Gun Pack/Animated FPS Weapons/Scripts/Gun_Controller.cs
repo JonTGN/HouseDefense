@@ -468,24 +468,24 @@ if (Input.GetKeyDown(KeyCode.LeftAlt)){   //Melee Attack
         MeleeAttack = false;
 		Idle = true;
 		}
-if (Input.GetKeyDown(KeyCode.C)){   //Crouch
-        Crouch = true;
-		Idle = false;
-		Select = false;
-    }
-if (Input.GetKeyDown(KeyCode.C) && Input.GetMouseButton(1)){ 
-        ZoomCrouch = true;
-		ZoomIdle = false;
-		Select = false;
-    }
-else if (Input.GetKeyUp(KeyCode.C) && Input.GetMouseButton(1)){ 
-        ZoomCrouch = false;
-		ZoomIdle = true;
-    }
-	else if (Input.GetKeyUp(KeyCode.C)){  
-        Crouch = false;
-		Idle = true;
-		}	
+//if (Input.GetKeyDown(KeyCode.C)){   //Crouch
+//        Crouch = true;
+//		Idle = false;
+//		Select = false;
+//    }
+//if (Input.GetKeyDown(KeyCode.C) && Input.GetMouseButton(1)){ 
+//        ZoomCrouch = true;
+//		ZoomIdle = false;
+//		Select = false;
+//    }
+//else if (Input.GetKeyUp(KeyCode.C) && Input.GetMouseButton(1)){ 
+//        ZoomCrouch = false;
+//		ZoomIdle = true;
+//    }
+//	else if (Input.GetKeyUp(KeyCode.C)){  
+//        Crouch = false;
+//		Idle = true;
+//		}	
 if (Input.GetButton("Jump") && Player.Jumping){   //Jump
         Jump = true;
 		Idle = false;
@@ -495,16 +495,18 @@ if (Input.GetButton("Jump") && Player.Jumping){   //Jump
         Jump = false;
 		Idle = true;
 		}			
-if (Input.GetKeyDown(KeyCode.G) && GrenadeSlot.GetComponent<GrenadeSlot>().grenadeQuantity > 0){   //Grenade Throw
+//if (Input.GetKeyDown(KeyCode.G) && GrenadeSlot.GetComponent<GrenadeSlot>().grenadeQuantity > 0){   //Grenade Throw
+//
+//        GrenadeThrow = true;
+//		Idle = false;
+//		Select = false;
+//    }
+	//else if (Input.GetKeyUp(KeyCode.G)){  
+  //      GrenadeThrow = false;
+	//	Idle = true;
+	//	}
 
-        GrenadeThrow = true;
-		Idle = false;
-		Select = false;
-    }
-	else if (Input.GetKeyUp(KeyCode.G)){  
-        GrenadeThrow = false;
-		Idle = true;
-		}
+
 if (EmptyReload || Reload || ReloadLoop || EndReload)
 	{
 		isZoomed = false;
