@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerTestScript : Player
 {
@@ -52,6 +53,8 @@ public class Player : MonoBehaviour
         {
             health = value;
             HealthChanged?.Invoke(health);
+            if(health == 0)
+                SceneManager.LoadScene("DeathScene");
         }
 
     }

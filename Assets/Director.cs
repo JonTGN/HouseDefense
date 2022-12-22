@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,6 +20,9 @@ public class Director : MonoBehaviour
 
     [SerializeField]
     List<EnemyClass> Enemies = new List<EnemyClass>();
+
+    [SerializeField]
+    GameObject[] SpawnPoints;
 
     [SerializeField]
     PlayerTestScript Player;
@@ -45,9 +49,12 @@ public class Director : MonoBehaviour
         //    //SPAWN FULL WAVE
         //    SpawnWave();
 
+        SpawnPoints = GameObject.FindGameObjectsWithTag("Spawn");
+
         SetupNewRound();
+
     }
-    
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.DrawCube(new Vector3(0,0,0) + new Vector3(0,0,Mathf.Ceil(spawnLength/2)), new Vector3(spawnWidth,1,spawnLength));
@@ -92,13 +99,26 @@ public class Director : MonoBehaviour
     {
         while (WaveStrength > 0)
         {
-            SpawnEnemy();
+            if(SpawnPoints.Length == 0)
+            {
+                SpawnEnemyAtDefault();
+            } else
+            {
+                SpawnEnemyAtSpawnPoint();
+            }
+
             WaveSize += 1;
             WaveStrength -= 1;
         }
     }
 
-    public void SpawnEnemy()
+    public void SpawnEnemyAtSpawnPoint()
+    {
+        GameObject spawnedEnemy = Instantiate(EnemyPrefab, SpawnPoints[Mathf.FloorToInt(Random.Range(0, SpawnPoints.Length))].transform.position, Quaternion.identity);
+        Enemies.Add(spawnedEnemy.GetComponent<DeathCube>());
+    }
+
+    public void SpawnEnemyAtDefault()
     {
         //if (Enemies.Count >= WaveSize)
         //    return;
@@ -122,9 +142,9 @@ public class Director : MonoBehaviour
         Player.Heal(10);
     }
 
-    public void DamagePlayer()
+    public void DamagePlayer(int amount)
     {
-        Player.Damage(10);
+        Player.Damage(amount);
     }
 
     public void QuitGame()
