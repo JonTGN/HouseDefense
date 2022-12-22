@@ -96515,8 +96515,8 @@ MonoBehaviour:
   range: 1000
   reloadTime: 1.5
   timeBetweenShots: 0
-  magazineSize: 3000
-  ammoReserve: 100
+  magazineSize: 31
+  ammoReserve: 0
   bulletsPerTap: 1
   allowButtonHold: 1
   shooting: 0

@@ -78,42 +78,65 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if shooting automatic weapon with bullets in clip
-        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && bulletsLeft > 0 && !reloading)
+        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && !reloading)
         {
-            Debug.Log("shooting");
+            if (bulletsLeft > 0)
+            {
             
-            if (aiming)
-            {
-                PlayAnim("ZoomFire");
+                if (aiming)
+                {
+                    PlayAnim("ZoomFire");
+                }
+
+                else
+                {
+                    // if cont. fire do not play idle anim in the middle of cooldown
+                    PlayAnim("Fire");
+                }
+
+                shooting = true;
+                Shoot();
             }
 
-            else
+            // no bullets left, dry fire
+            // TODO: FIX BUG: When plr holds mouse down dry fire anim is held and idle is not so gun is static
+            // Introduce wait time for duration of dry fire anim, when anim done goto idle/aim anim
+            else if (bulletsLeft <= 0)
             {
-                // if cont. fire do not play idle anim in the middle of cooldown
-                PlayAnim("Fire");
+                shooting = false;
+                DryFire();
+                //Reload();
             }
-
-            shooting = true;
-            Shoot();
             
         }
 
         // if shooting semi-auto weapon with bullets in clip
-        else if (Input.GetKeyDown(KeyCode.Mouse0) && bulletsLeft > 0 && !reloading)
+        else if (Input.GetKeyDown(KeyCode.Mouse0) && !reloading)
         {
-            if (aiming)
+            if (bulletsLeft > 0)
             {
-                PlayAnim("ZoomFire");
+            
+                if (aiming)
+                {
+                    PlayAnim("ZoomFire");
+                }
+
+                else
+                {
+                    // if cont. fire do not play idle anim in the middle of cooldown
+                    PlayAnim("Fire");
+                }
+
+                shooting = true;
+                Shoot();
             }
 
-            else
+            // no bullets left, dry fire
+            else if (bulletsLeft <= 0)
             {
-                // Manual fire
-                PlayAnim("Fire");
+                shooting = false;
+                DryFire();
             }
-
-            shooting = true;
-            Shoot();
         }
 
         // if not aiming and not reloading
@@ -142,7 +165,7 @@ public class WeaponClass : MonoBehaviour
 
     private void Reload()
     {
-        if (bulletsLeft < magazineSize && !reloading)
+        if (bulletsLeft < magazineSize && !reloading && ammoReserve > 0)
         {
             // clear any potential anim resets
             CancelInvoke();
@@ -161,10 +184,6 @@ public class WeaponClass : MonoBehaviour
 
     private void Shoot()
     {
-        Debug.Log("ready to shoot: " + readyToShoot);
-        Debug.Log("reloading: " + reloading);
-        Debug.Log("bullets left: " + bulletsLeft);
-
         if (readyToShoot && !reloading && bulletsLeft > 0)
         {
             PlayShotSound();
@@ -240,7 +259,7 @@ public class WeaponClass : MonoBehaviour
 
         }
 
-        // stop shooting
+        // should never hit this...
         else if (bulletsLeft <= 0)
         {
             PlayAnim("Idle");
@@ -264,13 +283,48 @@ public class WeaponClass : MonoBehaviour
 
     private void ReloadFinished()
     {
-        bulletsLeft = magazineSize;
-        reloading = false;
+        int amountNeededToResupply = magazineSize - bulletsLeft;
 
+        // can do a full reload
+        if (ammoReserve - amountNeededToResupply >= 0 )
+        {
+            bulletsLeft = magazineSize;
+            ammoReserve -= amountNeededToResupply;
+        }
+
+        // can only partly reload
+        else
+        {
+            bulletsLeft += ammoReserve;
+            ammoReserve = 0;
+        }
+        
         // tell shoot its okay to shoot
+        reloading = false;
         readyToShoot = true;
     }
 
+    private void DryFire()
+    {
+        CancelInvoke();
+
+        // lazy coding, no path from fire to dry fire, can't get bool on zoom fire? always false??
+        if (anim.GetBool("Fire"))
+            PlayAnim("Idle");  
+        
+        else if (aiming && !shooting)
+        {
+            PlayAnim("ZoomIdle");
+
+            // still play dry fire sound
+        }
+             
+        else
+        {
+            PlayAnim("DryFire");
+        } 
+    }
+    
     private void PlayAnim(string animToSetToTrue)
     {
         anim.SetBool("Idle", false);
@@ -278,11 +332,11 @@ public class WeaponClass : MonoBehaviour
         anim.SetBool("ZoomIdle", false);
         anim.SetBool("ZoomFire", false);
         anim.SetBool("Reload", false);
+        anim.SetBool("DryFire", false);
 
         // -- todo: -- //
         anim.SetBool("Move", false);
 		anim.SetBool("ZoomMove", false);
-		anim.SetBool("DryFire", false);
 		anim.SetBool("FastMove", false);
 		anim.SetBool("ReloadLoop", false);
 		anim.SetBool("EndReload", false);
