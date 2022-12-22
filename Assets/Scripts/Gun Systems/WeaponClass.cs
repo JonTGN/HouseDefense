@@ -7,15 +7,18 @@ using StarterAssets;
 
 public class WeaponClass : MonoBehaviour
 {
-
+    [Header("Inv Mngmt")]
+    public bool isGunEquipped;
+    public bool isGunPrimary;
+    
     [Header("Gun Stats")]
     public int damage;
-    public float timeBetweenShooting, spread, aimSpread, range, reloadTime, timeBetweenShots;
+    public float timeBetweenShooting, spread, aimSpread, range, reloadTime, timeBetweenShots, knifeTime;
     public int magazineSize, ammoReserve, bulletsPerTap;
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
 
-    bool readyToShoot, reloading, aiming, running, playingDryFireAnim = false, playedAimSound = false;
+    bool readyToShoot, reloading, aiming, running, playingDryFireAnim = false, playedAimSound = false, knifing = false, readyToMoveAfterSemi;
     
     // expose for shell eject script
     public bool shooting;
@@ -54,16 +57,25 @@ public class WeaponClass : MonoBehaviour
 
     private void Update()
     {
-        // DEBUG > set to find optimal gun pos while aming, comment both elses out
+        // DEBUG > uncomment to set new gun's pos
         //aiming = true;
         //Aim();
+        //return;
+        if (shooting)
+            Debug.Log("shooting: " + shooting);
+
 
         text.SetText(bulletsLeft + " / " + ammoReserve);
 
         // if reloading
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKey(KeyCode.R) && !knifing)
             // Reload
             Reload();
+
+        else if (Input.GetKey(KeyCode.F) && !reloading && !knifing)
+        {
+            Knife();
+        }
 
         // if aiming
         else if (Input.GetKey(KeyCode.Mouse1) && !reloading && !running)
@@ -89,7 +101,7 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if shooting automatic weapon with bullets in clip
-        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && !reloading && !running)
+        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && !reloading && !running && !knifing)
         {
             if (bulletsLeft > 0)
             {
@@ -123,14 +135,15 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if shooting semi-auto weapon with bullets in clip
-        else if (Input.GetKeyDown(KeyCode.Mouse0) && !reloading && !running)
+        else if (Input.GetKeyDown(KeyCode.Mouse0) && !reloading && !running && readyToShoot && !knifing)
         {
+            Debug.Log("in shoot function");
             if (bulletsLeft > 0)
             {
             
                 if (aiming)
                 {
-                    PlayAnim("ZoomFire");
+                    PlayAnim("AltZoomFire");
                 }
 
                 else
@@ -152,13 +165,13 @@ public class WeaponClass : MonoBehaviour
         }
 
         // play jump anim if not already reloading
-        else if (plr._input.jump && !reloading && !plr.Grounded)
+        else if (plr._input.jump && !reloading && !plr.Grounded && !knifing)
         {
             PlayAnim("Jump");
         }
 
         // Is sprinting -> +1 because there is acceleration
-        else if (plr._speed > plr.MoveSpeed + 1 && !reloading && plr.Grounded)
+        else if (plr._speed > plr.MoveSpeed + 1 && !reloading && plr.Grounded && !knifing && !shooting)
         {
             // play run anim
             PlayAnim("FastMove");
@@ -170,13 +183,17 @@ public class WeaponClass : MonoBehaviour
         }
 
         // Movement anims
-        else if (plr._speed > 0 && !reloading && plr.Grounded)
+        else if (plr._speed > 0 && !reloading && plr.Grounded && !knifing && !shooting)
         {
             if (aiming)
                 PlayAnim("ZoomMove");
             
-            else
+            // move anim broke for semi, dont want to fix :( use idle instead bc lazy
+            else if (allowButtonHold)
                 PlayAnim("Move");
+
+            else
+                PlayAnim("Idle");
 
             running = false;
 
@@ -184,10 +201,11 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if not aiming and not reloading be idle
-        else if (!aiming && !reloading)
+        else if (!aiming && !reloading && !knifing)
         {
             shooting = false;
-            ResetShot();
+            //ResetShot();
+            PlayAnim("Idle");
 
             running = false;
         }
@@ -210,6 +228,8 @@ public class WeaponClass : MonoBehaviour
     {
         if (bulletsLeft < magazineSize && !reloading && ammoReserve > 0)
         {
+            shooting = false;
+
             // sometimes this cancel invoke will clear this value out and keep it true, preventing dry fire anims/sounds
             playingDryFireAnim = false;
 
@@ -230,10 +250,26 @@ public class WeaponClass : MonoBehaviour
         }
     }
 
+    private void Knife()
+    {
+        Debug.Log("in knife");
+        knifing = true;
+        PlayAnim("MeleeAttack");
+
+        Invoke("CompleteKnife", knifeTime);
+    }
+
+    private void CompleteKnife()
+    {
+        knifing = false;
+    }
+
     private void Shoot()
     {
         if (readyToShoot && !reloading && bulletsLeft > 0)
         {
+            readyToMoveAfterSemi = false;
+
             PlayShotSound();
 
             bulletsShot = bulletsPerTap;
@@ -302,7 +338,7 @@ public class WeaponClass : MonoBehaviour
 
             Invoke("ResetShot", timeBetweenShooting);
 
-            if (bulletsShot > 0 && bulletsLeft > 0)
+            if (bulletsShot > 0 && bulletsLeft > 0 && readyToShoot)
                 Invoke("Shoot", timeBetweenShots);
 
         }
@@ -310,7 +346,7 @@ public class WeaponClass : MonoBehaviour
         // should never hit this...
         else if (bulletsLeft <= 0)
         {
-            PlayAnim("Idle");
+            //PlayAnim("Idle");
         }
 
     }
@@ -322,11 +358,29 @@ public class WeaponClass : MonoBehaviour
 
     private void ResetShot()
     {
-        if (!shooting) 
+        if (!allowButtonHold)
+        {
+            if (!aiming)
+                PlayAnim("Idle");
+
+            // make move anim wait for this var if using semi
+            Invoke("SemiShootingCooldown", timeBetweenShooting + 1);
+            
+        }
+
+        else if (!shooting) 
         {
             PlayAnim("Idle");
         }
+        Debug.Log("can shoot again");
         readyToShoot = true;
+    }
+
+    // idea behind this method is because move anim plays too quick after shooting, cutting into the shoot anim while using semi auto gun
+    // make the move anim wait for <shootingcooldown> var too before activating again
+    private void SemiShootingCooldown()
+    {
+        readyToMoveAfterSemi = true;
     }
 
     private void ReloadFinished()
@@ -355,7 +409,6 @@ public class WeaponClass : MonoBehaviour
     // bug: movement can get stuck in dry fire
     private void DryFire()
     {
-        Debug.Log("dry fire anim: " + playingDryFireAnim);
         // No path from fire to dry fire, can't get bool on zoom fire? always false??
         if (anim.GetBool("Fire"))
             PlayAnim("Idle");  
@@ -403,12 +456,14 @@ public class WeaponClass : MonoBehaviour
         anim.SetBool("FastMove", false);
         anim.SetBool("ZoomMove", false);
 		anim.SetBool("Jump", false);
+        anim.SetBool("AltFire", false);
+        anim.SetBool("AltZoomFire", false);
+        anim.SetBool("MeleeAttack", false);
 
         // -- todo: -- //
 		anim.SetBool("ReloadLoop", false);
 		anim.SetBool("EndReload", false);
 		anim.SetBool("EmptyReload", false);
-		anim.SetBool("MeleeAttack", false);
 		anim.SetBool("Crouch", false);
 		anim.SetBool("ZoomCrouch", false);
 		anim.SetBool("GrenadeThrow", false);
