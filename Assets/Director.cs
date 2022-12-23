@@ -40,6 +40,9 @@ public class Director : MonoBehaviour
     [SerializeField]
     public int spawnLength;
 
+    [SerializeField]
+    private float bodyTimer;
+
     private void Awake()
     {
         //Enemy = GameObject.Find("Test Enemy").GetComponent<DeathCube>();
@@ -84,8 +87,9 @@ public class Director : MonoBehaviour
     public void RemoveEnemy(EnemyClass instance)
     {
         Enemies.Remove(instance);
-        Destroy(instance.gameObject);
-        Debug.Log($"{gameObject.name} has died and been removed.");
+        
+        StartCoroutine(DestroyEnemyGameObjectIEnum(instance, bodyTimer));
+
         WaveSize -= 1;
 
         if(WaveSize == 0)
@@ -93,6 +97,14 @@ public class Director : MonoBehaviour
             Debug.Log("ROUND OVER");
             SetupNewRound();
         }    
+    }
+
+    IEnumerator DestroyEnemyGameObjectIEnum(EnemyClass instance, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        Destroy(instance.gameObject);
+        Debug.Log($"{gameObject.name} has been removed.");
     }
 
     private void SpawnWave()

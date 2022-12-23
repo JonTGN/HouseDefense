@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyClass : MonoBehaviour
 {
@@ -13,13 +14,14 @@ public class EnemyClass : MonoBehaviour
     protected int startingHealth;
 
     [SerializeField]
-    protected float moveSpeed;
-
-    [SerializeField]
     protected int health;
 
     [SerializeField]
     protected Director LevelManager;
+
+    private EnemyBehavior enemyBehavior;
+    private NavMeshAgent agent;
+
 
     #region Abstract Methods
 
@@ -27,6 +29,8 @@ public class EnemyClass : MonoBehaviour
     {
         health = startingHealth;
         LevelManager = GameObject.Find("LevelManager").GetComponent<Director>();
+        enemyBehavior = this.GetComponent<EnemyBehavior>();
+        agent = this.GetComponent<NavMeshAgent>();
     }
 
     #endregion
@@ -35,7 +39,7 @@ public class EnemyClass : MonoBehaviour
 
     public void Damage(int amount)
     {
-        Debug.Log($"{gameObject.name} has recieved {amount} damage!");
+        Debug.Log($"{gameObject.name} has recieved {amount} damage! Its new heath is: {health}");
         health = Mathf.Max(0, health - amount);
 
         EvaluateHealth();
@@ -61,6 +65,8 @@ public class EnemyClass : MonoBehaviour
     public void Die()
     {
         Debug.Log($"{gameObject.name} has died.");
+        enemyBehavior.anim.SetBool("is_dead", true);
+        agent.speed = 0;
         //Destroy(gameObject);
         NotifyOfDeath();
     }

@@ -10,6 +10,7 @@ public class WeaponClass : MonoBehaviour
     [Header("Inv Mngmt")]
     public bool isGunEquipped;
     public bool isGunPrimary;
+    public bool isGunOwned;
     
     [Header("Gun Stats")]
     public int damage;
@@ -18,7 +19,8 @@ public class WeaponClass : MonoBehaviour
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
 
-    bool readyToShoot, reloading, aiming, running, playingDryFireAnim = false, playedAimSound = false, knifing = false, readyToMoveAfterSemi;
+    bool readyToShoot, reloading, aiming, running, playingDryFireAnim = false, playedAimSound = false, knifing = false, puttingGunAway = false;
+    //bool readyToMoveAfterSemi;
     
     // expose for shell eject script
     public bool shooting;
@@ -40,11 +42,13 @@ public class WeaponClass : MonoBehaviour
     public AudioSource audio_reload;
     public AudioSource audio_aim;
     public AudioSource audio_dry_fire;
+    public AudioSource audio_knife;
+    public AudioSource audio_hit_marker;
 
 
     [Header("Graphics")]
     public GameObject muzzleFlash1;
-    public GameObject muzzleFlash2, bulletsHoleGraphic;
+    public GameObject muzzleFlash2, bulletsHoleGraphic, bloodSplatter;
     public float camShakeMagnitude, camShakeDuration;
     public TextMeshProUGUI text;
 
@@ -61,9 +65,9 @@ public class WeaponClass : MonoBehaviour
         //aiming = true;
         //Aim();
         //return;
-        if (shooting)
-            Debug.Log("shooting: " + shooting);
 
+        if (puttingGunAway)
+            return;
 
         text.SetText(bulletsLeft + " / " + ammoReserve);
 
@@ -72,13 +76,13 @@ public class WeaponClass : MonoBehaviour
             // Reload
             Reload();
 
-        else if (Input.GetKey(KeyCode.F) && !reloading && !knifing)
+        else if (Input.GetKey(KeyCode.F) && !reloading && !knifing && !shooting && !aiming && !anim.GetBool("MeleeAttack"))
         {
             Knife();
         }
 
         // if aiming
-        else if (Input.GetKey(KeyCode.Mouse1) && !reloading && !running)
+        else if (Input.GetKey(KeyCode.Mouse1) && !reloading && !running && !knifing)
         {
             if (!playedAimSound)
             {
@@ -137,7 +141,6 @@ public class WeaponClass : MonoBehaviour
         // if shooting semi-auto weapon with bullets in clip
         else if (Input.GetKeyDown(KeyCode.Mouse0) && !reloading && !running && readyToShoot && !knifing)
         {
-            Debug.Log("in shoot function");
             if (bulletsLeft > 0)
             {
             
@@ -252,15 +255,19 @@ public class WeaponClass : MonoBehaviour
 
     private void Knife()
     {
-        Debug.Log("in knife");
         knifing = true;
         PlayAnim("MeleeAttack");
+        audio_knife.Play();
 
         Invoke("CompleteKnife", knifeTime);
     }
 
     private void CompleteKnife()
     {
+        // if for some reason plr holds kinfe down anim will not complete properly but still play, make sure melee attack anim not active
+        if (anim.GetBool("MeleeAttack"))
+            PlayAnim("Idle");
+        
         knifing = false;
     }
 
@@ -268,7 +275,7 @@ public class WeaponClass : MonoBehaviour
     {
         if (readyToShoot && !reloading && bulletsLeft > 0)
         {
-            readyToMoveAfterSemi = false;
+            //readyToMoveAfterSemi = false;
 
             PlayShotSound();
 
@@ -298,15 +305,17 @@ public class WeaponClass : MonoBehaviour
             //Raycast
             if (Physics.Raycast(rayCam.transform.position, direction, out rayHit, range, whatIsEnemy))
             {
-                Debug.Log(rayHit.collider.name);
+                //Debug.Log(rayHit.collider.name);
 
                 if(rayHit.collider.CompareTag("Enemy"))
                 {
+                    //audio_hit_marker.Play();
+                    
                     // Modify this!
                     rayHit.collider.gameObject.GetComponentInParent<EnemyClass>().Damage(damage);
 
                     //Graphics
-                    //Instantiate(bulletsHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
+                    Instantiate(bloodSplatter, rayHit.point + new Vector3(0f, 0f, -.02f), Quaternion.FromToRotation(Vector3.up, rayHit.normal));
                 }
             }
 
@@ -317,10 +326,13 @@ public class WeaponClass : MonoBehaviour
 			    GameObject colObject = hit.collider.gameObject;
     
 			    //GameObject impactObject = Instantiate(Impact, hit.point, Quaternion.LookRotation(hit.normal));
-			    GameObject holeObject = Instantiate(bulletsHoleGraphic, hit.point + new Vector3(0f, 0f, -.02f), Quaternion.FromToRotation(Vector3.up, hit.normal));
-			    holeObject.transform.SetParent(colObject.transform);
-			    //Destroy(impactObject, 2f);
-			    Destroy(holeObject, 4f);
+                if (!hit.collider.CompareTag("Enemy"))
+                {
+			        GameObject holeObject = Instantiate(bulletsHoleGraphic, hit.point + new Vector3(0f, 0f, -.02f), Quaternion.FromToRotation(Vector3.up, hit.normal));
+			        holeObject.transform.SetParent(colObject.transform);
+			        //Destroy(impactObject, 2f);
+			        Destroy(holeObject, 4f);
+                }
 		    }
 
             //Audio 
@@ -372,7 +384,6 @@ public class WeaponClass : MonoBehaviour
         {
             PlayAnim("Idle");
         }
-        Debug.Log("can shoot again");
         readyToShoot = true;
     }
 
@@ -380,7 +391,7 @@ public class WeaponClass : MonoBehaviour
     // make the move anim wait for <shootingcooldown> var too before activating again
     private void SemiShootingCooldown()
     {
-        readyToMoveAfterSemi = true;
+        //readyToMoveAfterSemi = true;
     }
 
     private void ReloadFinished()
@@ -444,6 +455,25 @@ public class WeaponClass : MonoBehaviour
         playingDryFireAnim = false;
     }
     
+    public void PutGunAway()
+    {
+        Debug.Log("putting gun away");
+        CancelInvoke();
+
+        puttingGunAway = true;
+        PlayAnim("PutAway");
+
+        Invoke("PutAwayFinish", 0.5f);
+    }
+
+    private void PutAwayFinish()
+    {
+        puttingGunAway = false;
+        readyToShoot = true;
+
+        gameObject.SetActive(false);
+    }
+
     private void PlayAnim(string animToSetToTrue)
     {
         anim.SetBool("Idle", false);
@@ -459,6 +489,7 @@ public class WeaponClass : MonoBehaviour
         anim.SetBool("AltFire", false);
         anim.SetBool("AltZoomFire", false);
         anim.SetBool("MeleeAttack", false);
+        anim.SetBool("PutAway", false);
 
         // -- todo: -- //
 		anim.SetBool("ReloadLoop", false);

@@ -20,7 +20,7 @@ public class PlayerTestScript : Player
     void UpdateHealthLabel(int healthTotal )
     {
         playerHealth.text = $"{healthTotal}";
-        Debug.Log("UpdateHealthLabel() has been called!");
+        //Debug.Log("UpdateHealthLabel() has been called!");
     }
 
     // Update is called once per frame
@@ -39,9 +39,6 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     protected int startingHealth;
-
-    [SerializeField]
-    protected float moveSpeed;
 
     [SerializeField]
     private int health;

@@ -11,8 +11,7 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField]
     private Transform player;
 
-    [SerializeField]
-    private Animator anim;
+    public Animator anim;
 
     [SerializeField]
     private LayerMask whatIsGround, whatIsPlayer;
@@ -27,6 +26,7 @@ public class EnemyBehavior : MonoBehaviour
     private float walkPointRange;
 
     // Attacking
+    [SerializeField] int damage;
     [SerializeField]
     private float attackLength;
     [SerializeField]
@@ -106,7 +106,7 @@ public class EnemyBehavior : MonoBehaviour
         {
             ResetAnim();
             anim.SetBool("is_attacking", true);
-            Debug.Log("setting attack to true");
+            //Debug.Log("setting attack to true");
         }
         
 
@@ -120,8 +120,8 @@ public class EnemyBehavior : MonoBehaviour
 
         if (!alreadyAttacked)
         {
-            Debug.Log("attack!");
-            levelDirector.DamagePlayer(5);
+            //Debug.Log("attack!");
+            levelDirector.DamagePlayer(damage);
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), attackLength);
         }
@@ -131,30 +131,32 @@ public class EnemyBehavior : MonoBehaviour
     {
         ResetAnim();
         anim.SetBool("is_cooldown", true);
-        Debug.Log("in cooldown...");
+        //Debug.Log("in cooldown...");
 
         Invoke(nameof(FinishAttack), timeBetweenAttacks);
     }
 
     private void FinishAttack()
     {
-        Debug.Log("wait time over");
+        //Debug.Log("wait time over");
 
         alreadyAttacked = false;
     }
 
-    // idk if you already added this
+    [System.Obsolete]
     public void AITakeDamage(int damage)
     {
         health -= damage;
 
         if (health <= 0)
-            Invoke(nameof(KillEnemy), 0.5f);
+        {
+            anim.SetBool("is_dead", true);
+            Invoke(nameof(KillEnemy), 5f);
+        }
     }
 
     private void KillEnemy()
     {
-        anim.SetBool("is_dead", true);
         Destroy(gameObject);
     }
 
