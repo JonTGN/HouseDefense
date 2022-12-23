@@ -60,6 +60,12 @@ public class DiedCredits : MonoBehaviour
         SceneManager.LoadScene("AI Pathfinding");
     }
 
+    public void MainMenu()
+    {
+        Debug.Log("Scene Reloaded");
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void Quit()
     {
         Debug.Log("Application Quit");
