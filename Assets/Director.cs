@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Director : MonoBehaviour
 {
     [SerializeField]
     public int Round = 1;
+
+    [SerializeField]
+    public int finalRound = 1;
 
     [SerializeField]
     public int WaveSize = 0;
@@ -76,12 +80,21 @@ public class Director : MonoBehaviour
         // Increment round counter
         Round += 1;
 
-        StartRound();
+        if (Round == finalRound)
+            //test
+            EndGame();
+        else
+            StartRound();
     }
 
     private void StartRound()
     {
         SpawnWave();
+    }
+
+    private void EndGame()
+    {
+       SceneManager.LoadScene("WinScene");
     }
 
     public void RemoveEnemy(EnemyClass instance)

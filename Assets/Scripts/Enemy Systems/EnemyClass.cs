@@ -39,7 +39,10 @@ public class EnemyClass : MonoBehaviour
 
     public void Damage(int amount)
     {
-        Debug.Log($"{gameObject.name} has recieved {amount} damage! Its new heath is: {health}");
+        if (health == 0)
+            return;
+
+        //Debug.Log($"{gameObject.name} has recieved {amount} damage! Its new heath is: {health}");
         health = Mathf.Max(0, health - amount);
 
         EvaluateHealth();
