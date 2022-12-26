@@ -4267,7 +4267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2102342034907319707
 Transform:
   m_ObjectHideFlags: 0
@@ -4328,8 +4328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6acc6a64e2d1fb644914f28862b6093e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGunEquipped: 1
-  isGunPrimary: 1
+  isGunEquipped: 0
+  isGunPrimary: 0
   isGunOwned: 1
   damage: 10
   timeBetweenShooting: 0.07
@@ -12171,7 +12171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGunEquipped: 0
   isGunPrimary: 0
-  isGunOwned: 1
+  isGunOwned: 0
   damage: 10
   timeBetweenShooting: 0.14
   spread: 0.03
@@ -21865,7 +21865,7 @@ Transform:
   - {fileID: 6474568663295535165}
   - {fileID: 8384675128354489827}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7776503253632890917
 MonoBehaviour:

@@ -6,45 +6,95 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public WeaponClass[] guns;
+
+    private bool ownRifle = true;
+
+    public bool OwnRifle
+    {
+        get => ownRifle;
+        set
+        { 
+            ownRifle = value;
+        }
+    }
+
     private WeaponClass equippedGun, newGun;
 
+
+    private void Awake()
+    {
+        // Guns start in a disabled state
+        // Look for owned weapons
+        // Equip first weapon (Glock 100% of the time)
+        // Take Glock out
+
+        guns[0].gameObject.SetActive(true);
+    }
 
     // Update is called once per frame
     void Update()
     {
-        // equip primary
+        // switch to glock
+        if(Input.GetKeyDown(KeyCode.Alpha1) && guns[0].gameObject.activeSelf == false)
+        {
+            // put rifle away 
+            guns[1].PutGunAway();
+
+            StartCoroutine(EquipNewWeapon(guns[0].gameObject, 0.5f));
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            equippedGun = GetCurrentGun();
-            newGun = GetNewGun();
-
-            // return; primary already equipped
-            if (equippedGun.isGunPrimary)
-                return;
-
-            equippedGun.PutGunAway();
-            equippedGun.isGunEquipped = false;
-
-            // wait for put gun away func to finish
-            StartCoroutine(EquipNewWeapon(newGun.gameObject, 0.5f));
+            Debug.Log($"Conditions failed! (Switch to glock!)\n Conditions: {Input.GetKeyDown(KeyCode.Alpha1)} | {guns[1].gameObject.activeSelf == false}");
         }
 
-        // equip secondary
+        // switch to rifle
+        if (Input.GetKeyDown(KeyCode.Alpha2) && ownRifle && guns[1].gameObject.activeSelf == false)
+        {
+            // put rifle away 
+            guns[0].PutGunAway();
+
+            StartCoroutine(EquipNewWeapon(guns[1].gameObject, 0.5f));
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            equippedGun = GetCurrentGun();
-            newGun = GetNewGun();
-
-            // return; secondary already equipped
-            if (!equippedGun.isGunPrimary)
-                return;
-
-            equippedGun.PutGunAway();
-            equippedGun.isGunEquipped = false;
-
-            // wait for put gun away func to finish
-            StartCoroutine(EquipNewWeapon(newGun.gameObject, 0.5f));
+            Debug.Log($"Conditions failed! (Switch to rifle!)\n Conditions: {Input.GetKeyDown(KeyCode.Alpha2)} | {ownRifle} | {guns[1].gameObject.activeSelf == false}");
         }
+
+        //// equip primary
+        //if (input.getkeydown(keycode.alpha1))
+        //{
+        //    equippedgun = getcurrentgun();
+        //    newgun = getnewgun();
+
+        //    // return; primary already equipped
+        //    if (equippedgun.isgunprimary)
+        //        return;
+
+        //    equippedgun.putgunaway();
+        //    equippedgun.isgunequipped = false;
+
+        //    // wait for put gun away func to finish
+        //    startcoroutine(Equipewweapon(newgun.gameobject, 0.5f));
+        //}
+
+        //// equip secondary
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    equippedGun = GetCurrentGun();
+        //    newGun = GetNewGun();
+
+        //    // return; secondary already equipped
+        //    if (!equippedGun.isGunPrimary)
+        //        return;
+
+        //    equippedGun.PutGunAway();
+        //    equippedGun.isGunEquipped = false;
+
+        //    // wait for put gun away func to finish
+        //    StartCoroutine(EquipNewWeapon(newGun.gameObject, 0.5f));
+        //}
     }
 
     private WeaponClass GetCurrentGun()

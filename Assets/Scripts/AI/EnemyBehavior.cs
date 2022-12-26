@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -46,6 +47,7 @@ public class EnemyBehavior : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        player = GameObject.Find("PlayerCapsule").transform;
         levelDirector = GameObject.Find("LevelManager").GetComponent<Director>();
     }
 
@@ -90,7 +92,7 @@ public class EnemyBehavior : MonoBehaviour
     private void ChasePlayer()
     {
         ResetAnim();
-        anim.SetBool("is_running", true);
+        anim.SetBool("is_walking", true);
         agent.SetDestination(player.position);
 
         // fix bug where if you move slightly during attack ai will pause until <timeinbetweenattacks> var is complete
@@ -108,15 +110,21 @@ public class EnemyBehavior : MonoBehaviour
             anim.SetBool("is_attacking", true);
             //Debug.Log("setting attack to true");
         }
-        
 
         // make sure enemy doesn't move
         agent.SetDestination(transform.position);
 
-        // If you don't subtract y by 1.45 zombie will lay perp to plr. This is bc zombie is smaller than plr. 
-        // Will need to adjust this value if we make the zombie smaller most likely.
-        var targetPos = new Vector3(player.position.x, player.position.y - 1.45f, player.position.z);
-        transform.LookAt(targetPos); // Change to RotateTowards()
+        //agent.isStopped = true; // Clean this up
+
+
+        //// If you don't subtract y by 1.45 zombie will lay perp to plr. This is bc zombie is smaller than plr. 
+        //// Will need to adjust this value if we make the zombie smaller most likely.
+        //var targetPos = new Vector3(player.position.x, player.position.y - 1.45f, players.position.z);
+        //transform.LookAt(targetPos); // Change to RotateTowards()
+
+        //var targetDirection = player.position - transform.position;
+        //Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, 1, 0.0f);
+        //transform.rotation = Quaternion.LookRotation(newDirection) * new Quaternion(0f, 1f, 0f, 1f);
 
         if (!alreadyAttacked)
         {

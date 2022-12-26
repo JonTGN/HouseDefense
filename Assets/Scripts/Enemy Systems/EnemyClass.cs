@@ -68,6 +68,7 @@ public class EnemyClass : MonoBehaviour
     public void Die()
     {
         Debug.Log($"{gameObject.name} has died.");
+        gameObject.GetComponent<Collider>().enabled = false;
         enemyBehavior.anim.SetBool("is_dead", true);
         agent.speed = 0;
         //Destroy(gameObject);

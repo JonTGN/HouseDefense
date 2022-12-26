@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6231831491439011447
 MonoBehaviour:
@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 682ad7656ebb80843a3a7abb983731ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Round: 1
+  Round: 0
+  finalRound: 6
   WaveSize: 0
   WaveStrength: 0
   WaveModifier: 0
@@ -52,7 +53,8 @@ MonoBehaviour:
   SpawnPoints: []
   Player: {fileID: 0}
   PopulateWave: 0
-  EnemyPrefab: {fileID: 5359130962617997144, guid: 1e5ac50a12146d84384ad55208121352,
+  EnemyPrefab: {fileID: 8630722882375045013, guid: e9f0835397c619e439b8674437072654,
     type: 3}
   spawnWidth: 35
   spawnLength: 10
+  bodyTimer: 4
