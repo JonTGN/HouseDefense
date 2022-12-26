@@ -51,12 +51,15 @@ public class WeaponClass : MonoBehaviour
     public GameObject muzzleFlash2, bulletsHoleGraphic, bloodSplatter;
     public float camShakeMagnitude, camShakeDuration;
     public TextMeshProUGUI text;
+    public GameObject CustomMuzzleFlash;
 
     private void Awake()
     {
         bulletsLeft = magazineSize;
         readyToShoot = true;
         fpsCam.m_Lens.FieldOfView = normalFOV;
+        //CustomMuzzleFlash = GameObject.Find("MuzzleFlash");
+        //DeactivateMuzzleFlash();
     }
 
     private void Update()
@@ -366,6 +369,19 @@ public class WeaponClass : MonoBehaviour
     private void PlayShotSound()
     {
         audio_fire.Play();
+        ActivateMuzzleFlash();
+        Invoke("DeactivateMuzzleFlash", 0.1f);
+
+    }
+
+    private void ActivateMuzzleFlash()
+    {
+        CustomMuzzleFlash.SetActive(true);
+    }
+
+    private void DeactivateMuzzleFlash()
+    {
+        CustomMuzzleFlash.SetActive(false);
     }
 
     private void ResetShot()
