@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemPickup : MonoBehaviour, IInteractable
 {
     public string description;
+    public Items itemType;
 
     public string GetDescription()
     {
@@ -16,5 +17,12 @@ public class ItemPickup : MonoBehaviour, IInteractable
         // play pickup sound 
 
         gameObject.SetActive(false);
+
+
+    }
+
+    public Items GetType()
+    {
+        return itemType;
     }
 }

@@ -11,6 +11,10 @@ public class PlayerInteraction : MonoBehaviour
     public GameObject interactionUI;
     public TextMeshProUGUI interactionText;
 
+    // local gameobjects player has
+    private bool hasMatches;
+    private bool alreadyLitFireplace;
+
     private void Update()
     {
         InteractionRay();
@@ -32,11 +36,31 @@ public class PlayerInteraction : MonoBehaviour
 
             if (interactable != null)
             {
+                // check if has matches or has already lit it before interacting w/ fireplace
+                if (interactable.GetType() == Items.Fireplace)
+                {
+                    if (!hasMatches || alreadyLitFireplace)
+                        return;
+                }
+
                 hitSomething = true;
                 interactionText.text = interactable.GetDescription();
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    if (interactable.GetType() == Items.Matches)
+                        hasMatches = true;
+
+                    // will only get here if has matches, so safe to set to true
+                    if (interactable.GetType() == Items.Fireplace)
+                    {
+                        alreadyLitFireplace = true;
+
+                        // make interaction text disappear after lighting it
+                        hitSomething = false;
+                    }
+                        
+
                     interactable.Interact();
                 }
             }
