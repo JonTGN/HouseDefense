@@ -2,15 +2,16 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StarterAssets;
 
 public class HeadBobber : MonoBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera cam;
+    [SerializeField] private Camera cam;
 
     public float walkingBobbingSpeed = 14f;
     public float bobbingAmount = 0.05f;
+    public FirstPersonController player;
     //public CharacterController controller;
-
 
     bool sprinting = false;
     float defaultPosY = 0;
@@ -46,4 +47,5 @@ public class HeadBobber : MonoBehaviour
             cam.transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, defaultPosY, Time.deltaTime * walkingBobbingSpeed), transform.localPosition.z);
         }
     }
+
 }

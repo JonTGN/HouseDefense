@@ -21,7 +21,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     }
 
-    public Items GetType()
+    Items IInteractable.GetType()
     {
         return itemType;
     }

@@ -27,7 +27,7 @@ public class LightFireplace : MonoBehaviour, IInteractable
         audio_fireplace.Play();
     }
 
-    public Items GetType()
+    Items IInteractable.GetType()
     {
         return Items.Fireplace;
     }

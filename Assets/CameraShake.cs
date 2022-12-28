@@ -5,7 +5,7 @@ using Cinemachine;
 
 public class CameraShake : MonoBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera cam;
+    [SerializeField] private Camera cam;
     [SerializeField] private float freq = 0.5f;
     private float shakeTimer;
     private float shakeTimerTotal;
@@ -14,7 +14,7 @@ public class CameraShake : MonoBehaviour
 
     private void Awake()
     {
-        mcp = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        //mcp = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     public void Shake(float duration, float magnitude)

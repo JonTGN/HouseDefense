@@ -32,7 +32,7 @@ public class WeaponClass : MonoBehaviour
 
     [Header("Reference")]
     public Animator anim;
-    public CinemachineVirtualCamera fpsCam;
+    public Camera fpsCam;
     public Camera rayCam;  // for some reason fpsCam shoots raycast in front at all times?
     public RaycastHit rayHit;
     public FirstPersonController plr;
@@ -57,7 +57,7 @@ public class WeaponClass : MonoBehaviour
     {
         bulletsLeft = magazineSize;
         readyToShoot = true;
-        fpsCam.m_Lens.FieldOfView = normalFOV;
+        fpsCam.fieldOfView = normalFOV;
         //CustomMuzzleFlash = GameObject.Find("MuzzleFlash");
         //DeactivateMuzzleFlash();
     }
@@ -79,7 +79,7 @@ public class WeaponClass : MonoBehaviour
             // Reload
             Reload();
 
-        else if (Input.GetKey(KeyCode.F) && !reloading && !knifing && !shooting && !aiming && !anim.GetBool("MeleeAttack"))
+        else if (Input.GetKey(KeyCode.C) && !reloading && !knifing && !shooting && !aiming && !running && !anim.GetBool("MeleeAttack"))
         {
             Knife();
         }
@@ -103,7 +103,7 @@ public class WeaponClass : MonoBehaviour
             playedAimSound = false;
 
             // reset camera fov after done aiming
-            fpsCam.m_Lens.FieldOfView = Mathf.Lerp(fpsCam.m_Lens.FieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
+            fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
 
         }
 
@@ -227,7 +227,7 @@ public class WeaponClass : MonoBehaviour
     private void Aim()
     {
         PlayAnim("ZoomIdle");
-        fpsCam.m_Lens.FieldOfView = Mathf.Lerp(fpsCam.m_Lens.FieldOfView, zoom, Time.deltaTime * zoomSmooth);
+        fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, zoom, Time.deltaTime * zoomSmooth);
     }
 
     private void Reload()
@@ -248,7 +248,7 @@ public class WeaponClass : MonoBehaviour
             audio_reload.Play();
 
             // reset camera fov after done aiming
-            fpsCam.m_Lens.FieldOfView = Mathf.Lerp(fpsCam.m_Lens.FieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
+            fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
 
             PlayAnim("Reload");
             reloading = true;
