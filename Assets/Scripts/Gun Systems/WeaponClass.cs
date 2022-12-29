@@ -65,6 +65,12 @@ public class WeaponClass : MonoBehaviour
         //DeactivateMuzzleFlash();
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     private void Update()
     {
         // DEBUG > uncomment to set new gun's pos
