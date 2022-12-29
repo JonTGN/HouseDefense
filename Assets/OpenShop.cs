@@ -18,10 +18,11 @@ public class OpenShop : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-          // either extend functionality here, or in player interaction from ur script
-          Debug.Log("OpenShop");
-          ShopUI.SetActive(true);
-          input.enabled = false;
+        // either extend functionality here, or in player interaction from ur script
+        Debug.Log("OpenShop");
+        ShopUI.SetActive(true);
+        input.enabled = false;
+        Cursor.lockState = CursorLockMode.Confined;
 
         // also pls hide waypoint when shop inactive :)
     }

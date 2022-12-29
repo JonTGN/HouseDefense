@@ -19,7 +19,8 @@ public class WeaponClass : MonoBehaviour
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
 
-    bool readyToShoot, reloading, aiming, running, inShotgunLoop, playingDryFireAnim, playedAimSound, knifing, puttingGunAway, wantsToCancelShotgunReload, altForm;
+    public bool readyToShoot;
+    private bool  reloading, aiming, running, inShotgunLoop, playingDryFireAnim, playedAimSound, knifing, puttingGunAway, wantsToCancelShotgunReload, altForm;
     //bool readyToMoveAfterSemi;
     
     // expose for shell eject script
@@ -59,14 +60,9 @@ public class WeaponClass : MonoBehaviour
         bulletsLeft = magazineSize;
         readyToShoot = true;
         fpsCam.fieldOfView = normalFOV;
+
         //CustomMuzzleFlash = GameObject.Find("MuzzleFlash");
         //DeactivateMuzzleFlash();
-    }
-
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void Update()
@@ -121,7 +117,7 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if shooting automatic weapon with bullets in clip
-        if (allowButtonHold && Input.GetKey(KeyCode.Mouse0) && !reloading && !running && !knifing)
+        if (allowButtonHold && readyToShoot && Input.GetKey(KeyCode.Mouse0) && !reloading && !running && !knifing)
         {
             if (bulletsLeft > 0)
             {

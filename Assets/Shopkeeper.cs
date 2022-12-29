@@ -48,6 +48,10 @@ public class Shopkeeper : MonoBehaviour
         RetrieveValues();
         UpdateDisplay();
         UpdateInventoryWeightBlocks();
+        Debug.Log($"Grabbed current gun: {inventory.currentGun}");
+        Debug.Log($"Grabbed current gun script: {inventory.EnumToWeapon(inventory.currentGun).GetComponent<WeaponClass>()}");
+        inventory.EnumToWeapon(inventory.currentGun).GetComponent<WeaponClass>().readyToShoot = false;
+        Debug.Log("OnEnable()");
     }
 
     private void RetrieveValues()
@@ -123,27 +127,31 @@ public class Shopkeeper : MonoBehaviour
 
     public void BuyItem(WeaponItemUI weapon)
     {
-        // Update Values
-        damage = weapon.damage;
-        ammo = weapon.ammo;
-        range = weapon.range;
-        weight = weapon.weight;
-
-
-        // Funds Check
-            // Subtract (*Cost*)
-        if (Wallet >= weapon.price)
+        if(inventory.primaryGun == Guns.None)
         {
-            Wallet -= weapon.price;
+            // Update Values
+            damage = weapon.damage;
+            ammo = weapon.ammo;
+            range = weapon.range;
+            weight = weapon.weight;
+
+
+            // Funds Check
+            // Subtract (*Cost*)
+            if (Wallet >= weapon.price)
+            {
+                Wallet -= weapon.price;
+            }
+
+
+            // Update UI
+            UpdateDisplay();
+            UpdateInventoryWeightBlocks();
+            inventory.primaryGun = NameToEnum(weapon.name);
+            // Add primary
+            // ask jon
         }
 
-
-        // Update UI
-        UpdateDisplay();
-        UpdateInventoryWeightBlocks();
-        inventory.primaryGun = NameToEnum(weapon.name);
-        // Add primary
-        // ask jon
     }
     public void SellItem(WeaponItemUI weapon)
     {
@@ -151,6 +159,7 @@ public class Shopkeeper : MonoBehaviour
         //inventory.EnumToWeapon(inventory.primaryGun).PutGunAway();
         if (inventory.EnumToWeapon(inventory.primaryGun).PutGunAway())
         {
+            inventory.EnumToWeapon(inventory.currentGun).GetComponent<WeaponClass>().readyToShoot = true;
             // Update Values
             damage = weapon.damage;
             ammo = weapon.ammo;
@@ -248,7 +257,8 @@ public class Shopkeeper : MonoBehaviour
         DisableButtons();
         input.enabled = true;
         gameObject.SetActive(false);
-        
+        inventory.EnumToWeapon(inventory.currentGun).GetComponent<WeaponClass>().readyToShoot = true;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
 
