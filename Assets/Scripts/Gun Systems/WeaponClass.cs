@@ -59,9 +59,14 @@ public class WeaponClass : MonoBehaviour
         bulletsLeft = magazineSize;
         readyToShoot = true;
         fpsCam.fieldOfView = normalFOV;
-
         //CustomMuzzleFlash = GameObject.Find("MuzzleFlash");
         //DeactivateMuzzleFlash();
+    }
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update()

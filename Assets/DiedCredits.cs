@@ -21,6 +21,8 @@ public class DiedCredits : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         StartCoroutine(TextTyping());
     }
 
