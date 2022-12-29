@@ -60,8 +60,9 @@ public class EnemyBehavior : MonoBehaviour
     private void Update()
     {
         // check if player in sight/attack range
+        Vector3 endpt = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-        playerInAttackRnage = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+        playerInAttackRnage = Physics.CheckCapsule(transform.position, endpt, attackRange, whatIsPlayer);
 
         if (!playerInSightRange && !playerInAttackRnage) Patroling();
         if (playerInSightRange && !playerInAttackRnage && !alreadyAttacked) ChasePlayer();

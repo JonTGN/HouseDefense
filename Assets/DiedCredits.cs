@@ -14,6 +14,7 @@ public class DiedCredits : MonoBehaviour
     public TextMeshProUGUI textbox;
     public GameObject RestartButton;
     public GameObject QuitButton;
+    public GameObject FireplaceLights;
 
     private string msg = "";
     private int counter = 0;
@@ -44,6 +45,7 @@ public class DiedCredits : MonoBehaviour
         else
         {
             ButtonsVisible();
+            FireplaceLights.SetActive(false);
         }
     }
 
