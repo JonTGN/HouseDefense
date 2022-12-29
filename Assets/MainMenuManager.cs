@@ -9,7 +9,7 @@ public class MainMenuManager : MonoBehaviour
     public void StartButton()
     {
         Debug.Log("Scene Reloaded");
-        SceneManager.LoadScene("AI Pathfinding");
+        SceneManager.LoadScene("House");
     }
     public void HowToPlayButton()
     {

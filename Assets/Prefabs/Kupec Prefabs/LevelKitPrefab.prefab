@@ -11252,7 +11252,7 @@ Transform:
   - {fileID: 8027576541442046752}
   - {fileID: 864023656}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3176462203341161759
 PrefabInstance:
@@ -11665,6 +11665,26 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 1954225749772760866}
+    - target: {fileID: 6231831491439011447, guid: 90673fe84f2a089489cdc65e32ee0546,
+        type: 3}
+      propertyPath: finalRound
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6231831491439011447, guid: 90673fe84f2a089489cdc65e32ee0546,
+        type: 3}
+      propertyPath: spawnWidth
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6231831491439011447, guid: 90673fe84f2a089489cdc65e32ee0546,
+        type: 3}
+      propertyPath: spawnLength
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6231831491439011447, guid: 90673fe84f2a089489cdc65e32ee0546,
+        type: 3}
+      propertyPath: playerInteraction
+      value: 
+      objectReference: {fileID: 1524966187}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 90673fe84f2a089489cdc65e32ee0546, type: 3}
@@ -11747,6 +11767,11 @@ PrefabInstance:
       propertyPath: text
       value: 
       objectReference: {fileID: 8027576540928248306}
+    - target: {fileID: 2215783172657449405, guid: d62ec0eb4532d6d4a916daa5e42ed75a,
+        type: 3}
+      propertyPath: damage
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 2215783172657449405, guid: d62ec0eb4532d6d4a916daa5e42ed75a,
         type: 3}
       propertyPath: fpsCam
@@ -11927,6 +11952,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9157939234117459795, guid: d62ec0eb4532d6d4a916daa5e42ed75a,
+        type: 3}
+      propertyPath: m_StepOffset
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 9157939234117459806, guid: d62ec0eb4532d6d4a916daa5e42ed75a,
         type: 3}
       propertyPath: _input
@@ -11936,6 +11966,11 @@ PrefabInstance:
         type: 3}
       propertyPath: MoveSpeed
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157939234117459806, guid: d62ec0eb4532d6d4a916daa5e42ed75a,
+        type: 3}
+      propertyPath: JumpHeight
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 9157939234117459806, guid: d62ec0eb4532d6d4a916daa5e42ed75a,
         type: 3}
@@ -12108,7 +12143,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c0571148895697541891a156fbdb1be5, type: 3}
   cementSurface:
   - {fileID: 8300000, guid: 58bdae1f0045d97418e7ec00d392097b, type: 3}
-  walkWait: 0.24
+  walkWait: 0.26
   runWait: 0
 --- !u!4 &1954225749772760865 stripped
 Transform:
@@ -12292,6 +12327,7 @@ MonoBehaviour:
   interactionDistance: 2
   interactionUI: {fileID: 78328790}
   interactionText: {fileID: 1316997956}
+  alreadyLitFireplace: 0
 --- !u!114 &1972976147
 MonoBehaviour:
   m_ObjectHideFlags: 0

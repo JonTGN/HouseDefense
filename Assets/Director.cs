@@ -49,6 +49,7 @@ public class Director : MonoBehaviour
 
     [SerializeField]
     private PlayerInteraction playerInteraction;
+    bool hasAlreadyStarted;
 
     private void Awake()
     {
@@ -68,9 +69,10 @@ public class Director : MonoBehaviour
 
     void Update()
     {
-        if (playerInteraction.alreadyLitFireplace)
+        if (playerInteraction.alreadyLitFireplace && !hasAlreadyStarted)
         {
             SetupNewRound();
+            hasAlreadyStarted = true;
         }
     }
 
@@ -87,7 +89,7 @@ public class Director : MonoBehaviour
 
         // Calculate the wave strength with function * wave modifier
         // Temporary wave strength calculation is: (2 + (2 x Round))
-        WaveStrength = Mathf.Ceil((2 + (2 * Round)) * WaveModifier);
+        WaveStrength = Mathf.Ceil((4 + (4 * Round)) * WaveModifier);
 
         // Increment round counter
         Round += 1;
