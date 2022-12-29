@@ -12078,7 +12078,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2270559559687665866
 Transform:
   m_ObjectHideFlags: 0
@@ -21745,8 +21745,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6543ddc10bb14a445b43d85b39dc240d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  freq: 0.5
 --- !u!1 &6474568663874902526
 GameObject:
   m_ObjectHideFlags: 0
@@ -21867,7 +21865,7 @@ Transform:
   - {fileID: 8384675128354489827}
   - {fileID: 6474568663295535165}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7776503253632890917
 MonoBehaviour:
@@ -21884,6 +21882,9 @@ MonoBehaviour:
   enemyName: 
   startingHealth: 100
   health: 0
+  player_hurt: {fileID: 0}
+  cameraShake: {fileID: 0}
+  cameraShakeMagnitude: 0
   playerHealth: {fileID: 0}
 --- !u!114 &7776503253632890916
 MonoBehaviour:

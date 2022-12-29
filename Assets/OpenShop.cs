@@ -1,26 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class OpenShop : MonoBehaviour, IInteractable
 {
+    public GameObject WeaponHolder;
     public GameObject ShopUI;
 
-  public string GetDescription()
-  {
-    return "Press E to Open Shops";
-  }
+    [Header("Controls")]
+    public PlayerInput input;
 
-  public void Interact()
-  {
-    // either extend functionality here, or in player interaction from ur script
-    Debug.Log("OpenShop");
+    public string GetDescription()
+    {
+          return "Press E to Open Shops";
+    }
 
-    // also pls hide waypoint when shop inactive :)
-  }
+    public void Interact()
+    {
+          // either extend functionality here, or in player interaction from ur script
+          Debug.Log("OpenShop");
+          ShopUI.SetActive(true);
+          input.enabled = false;
 
-  Items IInteractable.GetType()
-  {
-    return Items.Shop;
-  }
+        // also pls hide waypoint when shop inactive :)
+    }
+
+    Items IInteractable.GetType()
+    {
+          return Items.Shop;
+    }
 }
