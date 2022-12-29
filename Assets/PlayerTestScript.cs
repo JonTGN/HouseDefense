@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
         get => health;
         set
         {
+            // play audio of gettign hit here
             health = value;
             HealthChanged?.Invoke(health);
             if(health == 0)

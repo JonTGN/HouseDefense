@@ -19,21 +19,21 @@ public class CameraShake : MonoBehaviour
 
     public void Shake(float duration, float magnitude)
     {
-        mcp.m_AmplitudeGain = magnitude;
-        mcp.m_FrequencyGain = freq;
-        startingIntensity = magnitude;
-        shakeTimer = duration;
-        shakeTimerTotal = duration;
+        // mcp.m_AmplitudeGain = magnitude;
+        // mcp.m_FrequencyGain = freq;
+        // startingIntensity = magnitude;
+        // shakeTimer = duration;
+        // shakeTimerTotal = duration;
     }
 
     private void Update()
     {
-        if (shakeTimer > 0) 
-        {
-            shakeTimer -= Time.deltaTime;
+        //if (shakeTimer > 0) 
+        //{
+        //    shakeTimer -= Time.deltaTime;
 
-            mcp.m_AmplitudeGain = Mathf.Lerp(startingIntensity, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
-            mcp.m_FrequencyGain = Mathf.Lerp(freq, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
-        }
+        //    mcp.m_AmplitudeGain = Mathf.Lerp(startingIntensity, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
+        //    mcp.m_FrequencyGain = Mathf.Lerp(freq, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
+        //}
     }
 }

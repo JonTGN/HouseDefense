@@ -19,11 +19,11 @@ public class WeaponClass : MonoBehaviour
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
 
-    bool readyToShoot, reloading, aiming, running, playingDryFireAnim = false, playedAimSound = false, knifing = false, puttingGunAway = false;
+    bool readyToShoot, reloading, aiming, running, inShotgunLoop, playingDryFireAnim, playedAimSound, knifing, puttingGunAway, wantsToCancelShotgunReload, altForm;
     //bool readyToMoveAfterSemi;
     
     // expose for shell eject script
-    public bool shooting;
+    public bool shooting, isShotgun;
 
     [Header("Movement")]
     public int normalFOV;
@@ -44,6 +44,7 @@ public class WeaponClass : MonoBehaviour
     public AudioSource audio_dry_fire;
     public AudioSource audio_knife;
     public AudioSource audio_hit_marker;
+    public AudioSource audio_slide;
 
 
     [Header("Graphics")]
@@ -58,6 +59,7 @@ public class WeaponClass : MonoBehaviour
         bulletsLeft = magazineSize;
         readyToShoot = true;
         fpsCam.fieldOfView = normalFOV;
+
         //CustomMuzzleFlash = GameObject.Find("MuzzleFlash");
         //DeactivateMuzzleFlash();
     }
@@ -74,6 +76,12 @@ public class WeaponClass : MonoBehaviour
 
         text.SetText(bulletsLeft + " / " + ammoReserve);
 
+        // KMS
+        //if (Input.GetKey(KeyCode.Mouse0) && isShotgun && !wantsToCancelShotgunReload && reloading)
+        //{
+            //wantsToCancelShotgunReload = true;
+        //}
+
         // if reloading
         if (Input.GetKey(KeyCode.R) && !knifing)
             // Reload
@@ -81,7 +89,7 @@ public class WeaponClass : MonoBehaviour
 
         else if (Input.GetKey(KeyCode.C) && !reloading && !knifing && !shooting && !aiming && !running && !anim.GetBool("MeleeAttack"))
         {
-            Knife();
+            //Knife();
         }
 
         // if aiming
@@ -189,7 +197,7 @@ public class WeaponClass : MonoBehaviour
         }
 
         // Movement anims
-        else if (plr._speed > 0 && !reloading && plr.Grounded && !knifing && !shooting)
+        else if (plr._speed > 0 && !reloading && plr.Grounded && !knifing && !shooting && !inShotgunLoop)
         {
             if (aiming)
                 PlayAnim("ZoomMove");
@@ -198,7 +206,7 @@ public class WeaponClass : MonoBehaviour
             else if (allowButtonHold)
                 PlayAnim("Move");
 
-            else
+            else 
                 PlayAnim("Idle");
 
             running = false;
@@ -207,7 +215,7 @@ public class WeaponClass : MonoBehaviour
         }
 
         // if not aiming and not reloading be idle
-        else if (!aiming && !reloading && !knifing)
+        else if (!aiming && !reloading && !knifing && !inShotgunLoop)
         {
             shooting = false;
             //ResetShot();
@@ -245,15 +253,48 @@ public class WeaponClass : MonoBehaviour
             // if aiming clear any anims and don't allow
             aiming = false;
 
-            audio_reload.Play();
+            if (!isShotgun)
+                audio_reload.Play();
 
             // reset camera fov after done aiming
             fpsCam.fieldOfView = Mathf.Lerp(fpsCam.fieldOfView, normalFOV, Time.deltaTime * zoomSmooth);
 
             PlayAnim("Reload");
             reloading = true;
-            Invoke("ReloadFinished", reloadTime);
+
+            if (isShotgun)
+            {
+                // .433 is len of relaod anim for shotgun
+                Invoke("ShotgunReload", 0.433f);
+                //Invoke("Reload", 0);
+            }
+
+            else
+                Invoke("ReloadFinished", reloadTime);
+
+            
         }
+
+        else if (isShotgun && (bulletsLeft == magazineSize || ammoReserve == 0))
+        {
+            PlayAnim("EndReload");
+            Invoke("PlaySlideSound", 0.266f);
+            Invoke("EndReload", 0.5f);
+        }
+    }
+
+    private void PlaySlideSound()
+    {
+        if (!audio_slide.isPlaying)
+            audio_slide.Play();
+    }
+
+    private void EndReload()
+    {
+        reloading = false;
+        readyToShoot = true;
+        inShotgunLoop = false;
+        wantsToCancelShotgunReload = false;
     }
 
     private void Knife()
@@ -279,10 +320,15 @@ public class WeaponClass : MonoBehaviour
         if (readyToShoot && !reloading && bulletsLeft > 0)
         {
             //readyToMoveAfterSemi = false;
+            if (!inShotgunLoop)
+            {
+                PlayShotSound();
 
-            PlayShotSound();
+                bulletsShot = bulletsPerTap;
+            }
 
-            bulletsShot = bulletsPerTap;
+            if(isShotgun && !inShotgunLoop)
+                Invoke("PlaySlideSound", 0.2f);
 
             readyToShoot = false;
 
@@ -348,13 +394,22 @@ public class WeaponClass : MonoBehaviour
             //Instantiate(bulletsHoleGraphic, rayHit.point, Quaternion.Euler(0, 180, 0));
             //Instantiate(muzzleFlash, attackPoint.position, attackPoint.rotation);
 
-            bulletsLeft--;
-            bulletsShot--;
+            if (bulletsShot <= 1)
+                bulletsLeft--;
 
-            Invoke("ResetShot", timeBetweenShooting);
+            bulletsShot--;        
 
-            if (bulletsShot > 0 && bulletsLeft > 0 && readyToShoot)
+            if (bulletsShot > 0 && bulletsLeft > 0)
+            {
+                readyToShoot = true;
+
+                // will not have burst weapon so lazy way is ok for this
+                inShotgunLoop = true;
                 Invoke("Shoot", timeBetweenShots);
+            }
+                
+            else
+                Invoke("ResetShot", timeBetweenShooting);
 
         }
 
@@ -388,7 +443,7 @@ public class WeaponClass : MonoBehaviour
     {
         if (!allowButtonHold)
         {
-            if (!aiming)
+            if (!aiming && !inShotgunLoop && !reloading)
                 PlayAnim("Idle");
 
             // make move anim wait for this var if using semi
@@ -396,11 +451,12 @@ public class WeaponClass : MonoBehaviour
             
         }
 
-        else if (!shooting) 
+        else if (!shooting && !inShotgunLoop) 
         {
             PlayAnim("Idle");
         }
         readyToShoot = true;
+        inShotgunLoop = false;
     }
 
     // idea behind this method is because move anim plays too quick after shooting, cutting into the shoot anim while using semi auto gun
@@ -408,6 +464,34 @@ public class WeaponClass : MonoBehaviour
     private void SemiShootingCooldown()
     {
         //readyToMoveAfterSemi = true;
+    }
+
+    private void ShotgunReload()
+    {
+        if (wantsToCancelShotgunReload)
+        {
+            CancelInvoke();
+            PlayAnim("EndReload");
+            Invoke("EndReload", reloadTime);
+
+        }
+        if (ammoReserve > 0 && bulletsLeft < magazineSize)
+        {
+            PlayAnim("ReloadLoop");
+            // reload anim happens at .266
+            Invoke("ShotgunReloadSound", 0.266f);
+            Invoke("ShotgunReload", reloadTime);
+        }
+
+        else
+            Reload();
+    }
+
+    private void ShotgunReloadSound()
+    {
+        audio_reload.Play();
+        bulletsLeft++;
+        ammoReserve--;
     }
 
     private void ReloadFinished()
@@ -427,7 +511,7 @@ public class WeaponClass : MonoBehaviour
             bulletsLeft += ammoReserve;
             ammoReserve = 0;
         }
-        
+      
         // tell shoot its okay to shoot
         reloading = false;
         readyToShoot = true;
@@ -471,15 +555,23 @@ public class WeaponClass : MonoBehaviour
         playingDryFireAnim = false;
     }
     
-    public void PutGunAway()
+    public bool PutGunAway()
     {
-        Debug.Log("putting gun away");
-        CancelInvoke();
+        if (!reloading && !knifing && !shooting && !running)
+        {
+            Debug.Log("putting gun away");
+            CancelInvoke();
 
-        puttingGunAway = true;
-        PlayAnim("PutAway");
+            puttingGunAway = true;
+            PlayAnim("PutAway");
 
-        Invoke("PutAwayFinish", 0.5f);
+            Invoke("PutAwayFinish", 0.5f);
+
+            return true;
+        }
+
+        else
+            return false;
     }
 
     private void PutAwayFinish()
@@ -506,10 +598,11 @@ public class WeaponClass : MonoBehaviour
         anim.SetBool("AltZoomFire", false);
         anim.SetBool("MeleeAttack", false);
         anim.SetBool("PutAway", false);
+        anim.SetBool("ReloadLoop", false);
+        anim.SetBool("EndReload", false);
+        anim.SetBool("AlternateTo", false);
 
         // -- todo: -- //
-		anim.SetBool("ReloadLoop", false);
-		anim.SetBool("EndReload", false);
 		anim.SetBool("EmptyReload", false);
 		anim.SetBool("Crouch", false);
 		anim.SetBool("ZoomCrouch", false);

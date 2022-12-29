@@ -9,7 +9,8 @@ public class Footsteps : MonoBehaviour
     public AudioSource footstepPlayer;
     public AudioClip[] woodSurface;
     public AudioClip[] carpetSurface;
-    public float soundWait;
+    public float walkWait, runWait;
+    private float soundWait;
     private bool isPlayingWalkSound;
 
     void Update()
@@ -31,11 +32,11 @@ public class Footsteps : MonoBehaviour
 
                 // if running set faster wait time
 		        if (player._speed > player.MoveSpeed)
-                    soundWait = 0.0f;
+                    soundWait = runWait;
                 
                 // player is walking
                 else
-                    soundWait = 0.35f;
+                    soundWait = walkWait;
 
                 if (floortag == "Wood")
 		        {

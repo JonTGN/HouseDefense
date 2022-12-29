@@ -8,7 +8,8 @@ public class HeadBobber : MonoBehaviour
 {
     [SerializeField] private Camera cam;
 
-    public float walkingBobbingSpeed = 14f;
+    public float walkingBobbingSpeed = 10f;
+    public float runMultiplier = 1.1f;
     public float bobbingAmount = 0.05f;
     public FirstPersonController player;
     //public CharacterController controller;
@@ -24,22 +25,22 @@ public class HeadBobber : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
+        if (player._speed > player.MoveSpeed)
             sprinting = true;
-        }
 
-        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1f || Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f)
+        else if (player._speed > 0)
+            sprinting = false;
+
+        if (player._speed > 0)
         {
-            //Player is moving
-
             if (sprinting)
-                timer += Time.deltaTime * 1.5f * walkingBobbingSpeed;
+                timer += Time.deltaTime * runMultiplier * walkingBobbingSpeed;
             else
                 timer += Time.deltaTime * walkingBobbingSpeed;
 
             cam.transform.localPosition = new Vector3(transform.localPosition.x, defaultPosY + Mathf.Sin(timer) * bobbingAmount, transform.localPosition.z);
         }
+
         else
         {
             // Idle
@@ -47,5 +48,4 @@ public class HeadBobber : MonoBehaviour
             cam.transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, defaultPosY, Time.deltaTime * walkingBobbingSpeed), transform.localPosition.z);
         }
     }
-
 }
