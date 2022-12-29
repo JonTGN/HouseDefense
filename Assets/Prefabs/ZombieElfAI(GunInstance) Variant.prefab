@@ -8,30 +8,15 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5484682005682805104, guid: 246054c2492799b4e9fe32d4ae790ae9,
-        type: 3}
-      propertyPath: damage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5484682005682805104, guid: 246054c2492799b4e9fe32d4ae790ae9,
-        type: 3}
-      propertyPath: attackRange
-      value: 0.7
-      objectReference: {fileID: 0}
     - target: {fileID: 5484682005682805105, guid: 246054c2492799b4e9fe32d4ae790ae9,
         type: 3}
       propertyPath: m_Name
       value: ZombieElfAI(GunInstance) Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 5484682005682805105, guid: 246054c2492799b4e9fe32d4ae790ae9,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5484682005682805110, guid: 246054c2492799b4e9fe32d4ae790ae9,
         type: 3}
       propertyPath: m_RootOrder
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5484682005682805110, guid: 246054c2492799b4e9fe32d4ae790ae9,
         type: 3}
@@ -82,11 +67,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5484682005682805111, guid: 246054c2492799b4e9fe32d4ae790ae9,
-        type: 3}
-      propertyPath: m_Speed
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

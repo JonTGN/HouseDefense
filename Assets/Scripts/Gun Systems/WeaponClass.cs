@@ -387,7 +387,7 @@ public class WeaponClass : MonoBehaviour
             //Audio 
 
             //ShakeCamera
-            cameraShake.Shake(camShakeDuration, camShakeMagnitude);
+            StartCoroutine(cameraShake.Shake(camShakeDuration, camShakeMagnitude));
             //camShake.Shake(camShakeDuration, camShakeMagnitude);
 
             //Graphics

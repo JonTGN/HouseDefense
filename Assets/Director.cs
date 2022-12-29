@@ -47,6 +47,9 @@ public class Director : MonoBehaviour
     [SerializeField]
     private float bodyTimer;
 
+    [SerializeField]
+    private PlayerInteraction playerInteraction;
+
     private void Awake()
     {
         //Enemy = GameObject.Find("Test Enemy").GetComponent<DeathCube>();
@@ -58,8 +61,17 @@ public class Director : MonoBehaviour
 
         SpawnPoints = GameObject.FindGameObjectsWithTag("Spawn");
 
-        SetupNewRound();
+        // setup new round when fireplace is activated
+        //SetupNewRound();
 
+    }
+
+    void Update()
+    {
+        if (playerInteraction.alreadyLitFireplace)
+        {
+            SetupNewRound();
+        }
     }
 
     private void OnDrawGizmosSelected()

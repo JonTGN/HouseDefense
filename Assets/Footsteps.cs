@@ -9,6 +9,7 @@ public class Footsteps : MonoBehaviour
     public AudioSource footstepPlayer;
     public AudioClip[] woodSurface;
     public AudioClip[] carpetSurface;
+    public AudioClip[] cementSurface;
     public float walkWait, runWait;
     private float soundWait;
     private bool isPlayingWalkSound;
@@ -38,17 +39,23 @@ public class Footsteps : MonoBehaviour
                 else
                     soundWait = walkWait;
 
-                if (floortag == "Wood")
+                if (floortag == "Wood" && !isPlayingWalkSound)
 		        {
                     var selectedFootstep = woodSurface[Random.Range(0, woodSurface.Length)];
 		            StartCoroutine(playFootstepSound(selectedFootstep));
 		        }
 
-		        else if (floortag == "Carpet")
+		        else if (floortag == "Carpet" && !isPlayingWalkSound)
 		        {
-                    footstepPlayer.clip = carpetSurface[Random.Range(0, carpetSurface.Length)];
-		            footstepPlayer.Play();
+                    var selectedFootstep = carpetSurface[Random.Range(0, carpetSurface.Length)];
+		            StartCoroutine(playFootstepSound(selectedFootstep));
 		        }
+
+                else if (floortag == "Cement" && !isPlayingWalkSound)
+                {
+                    var selectedFootstep = cementSurface[Random.Range(0, cementSurface.Length)];
+		            StartCoroutine(playFootstepSound(selectedFootstep));
+                }
 		    }
 		}
     }
