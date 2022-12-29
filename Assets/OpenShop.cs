@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class OpenShop : MonoBehaviour, IInteractable
 {
+    public GameObject ShopUI;
+
   public string GetDescription()
   {
-    return "Open Shop";
+    return "Press E to Open Shops";
   }
 
   public void Interact()
   {
     // either extend functionality here, or in player interaction from ur script
-    Debug.Log("Make it snappy, I gotta take a craaaaaaap! haha 7dtd");
+    Debug.Log("OpenShop");
 
     // also pls hide waypoint when shop inactive :)
   }
