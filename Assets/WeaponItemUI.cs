@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class WeaponItemUI : MonoBehaviour
 {
@@ -12,9 +13,9 @@ public class WeaponItemUI : MonoBehaviour
     [Header("Weapon Item")]
     public TextMeshProUGUI weaponNameLabel;
 
-    [Header("Weapon Showcase")]
-    public TextMeshProUGUI weaponNameDisplayLabel;
-    //public TextMeshProUGUI weaponPriceLabel;
+    [Header("Buttons")]
+    public Button BuyButton;
+    public Button SellButton;
 
     [Header("Weapon Stats")]
     [Range(0, 7)]
@@ -38,15 +39,11 @@ public class WeaponItemUI : MonoBehaviour
     public void WeaponSelected()
     {
         Debug.Log("button selected");
-        updateDisplayLabels();
-    }
-
-    private void updateDisplayLabels()
-    {
-        weaponNameDisplayLabel.text = name;
-        //weaponPriceLabel.text = $"${price}";
-
         DisplayWeapon();
+        //Turn on my buttons after all turned off
+        BuyButton.interactable = true;
+        SellButton.interactable = true;
+        Debug.Log("Buttons Enabled");
     }
 
     public void DisplayWeapon()

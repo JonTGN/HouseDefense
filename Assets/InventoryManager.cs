@@ -7,8 +7,8 @@ using System;
 public class InventoryManager : MonoBehaviour
 {
     public WeaponClass[] guns;
-    [SerializeField] private Guns currentGun = Guns.None;
-    [SerializeField] private Guns primaryGun = Guns.None;
+    [SerializeField] public Guns currentGun = Guns.None;
+    [SerializeField] public Guns primaryGun = Guns.None;
 
     private bool ownRifle = true;
 
@@ -48,7 +48,7 @@ public class InventoryManager : MonoBehaviour
         }
 
         // switch to primary
-        if (Input.GetKeyDown(KeyCode.Alpha2) && currentGun == Guns.Pistol)
+        if (Input.GetKeyDown(KeyCode.Alpha2) && currentGun == Guns.Pistol && primaryGun != Guns.None)
         {
             // put pistol away 
             if (EnumToWeapon(currentGun).PutGunAway())
@@ -95,7 +95,7 @@ public class InventoryManager : MonoBehaviour
         */
     }
 
-  private WeaponClass EnumToWeapon(Guns gunType)
+  public WeaponClass EnumToWeapon(Guns gunType)
   {
         switch (gunType)
         {
@@ -136,7 +136,7 @@ public class InventoryManager : MonoBehaviour
         return guns.Where(o => o.isGunOwned && o.isGunPrimary).FirstOrDefault();
     }
 
-    IEnumerator EquipNewWeapon(WeaponClass weaponToEquip, float delay)
+    public IEnumerator EquipNewWeapon(WeaponClass weaponToEquip, float delay)
     {
         yield return new WaitForSeconds(delay);
 
