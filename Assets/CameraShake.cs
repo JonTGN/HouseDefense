@@ -5,35 +5,24 @@ using Cinemachine;
 
 public class CameraShake : MonoBehaviour
 {
-    [SerializeField] private Camera cam;
-    [SerializeField] private float freq = 0.5f;
-    private float shakeTimer;
-    private float shakeTimerTotal;
-    private float startingIntensity;
-    private CinemachineBasicMultiChannelPerlin mcp;
-
-    private void Awake()
+    public IEnumerator Shake(float duration, float magnitude)
     {
-        //mcp = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-    }
+        Vector3 originalPos = transform.localPosition;
 
-    public void Shake(float duration, float magnitude)
-    {
-        // mcp.m_AmplitudeGain = magnitude;
-        // mcp.m_FrequencyGain = freq;
-        // startingIntensity = magnitude;
-        // shakeTimer = duration;
-        // shakeTimerTotal = duration;
-    }
+        float elapsed = 0.0f;
 
-    private void Update()
-    {
-        //if (shakeTimer > 0) 
-        //{
-        //    shakeTimer -= Time.deltaTime;
+        while (elapsed < duration)
+        {
+            float x = Random.Range(-1f, 1f) * magnitude;
+            float y = Random.Range(-1f, 1f) * magnitude;
 
-        //    mcp.m_AmplitudeGain = Mathf.Lerp(startingIntensity, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
-        //    mcp.m_FrequencyGain = Mathf.Lerp(freq, 0f, ( 1 - (shakeTimer / shakeTimerTotal)));
-        //}
+            transform.localPosition = new Vector3(x, y, originalPos.z);
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        transform.localPosition = originalPos;
     }
 }

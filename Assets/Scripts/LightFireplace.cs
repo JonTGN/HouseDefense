@@ -7,6 +7,7 @@ public class LightFireplace : MonoBehaviour, IInteractable
     public GameObject activateFireplace;
     public AudioSource audio_match;
     public AudioSource audio_fireplace;
+    public AudioSource radio;
 
     public string GetDescription()
     {
@@ -20,6 +21,9 @@ public class LightFireplace : MonoBehaviour, IInteractable
         Invoke("PlayFireplaceAmbience", 0.4f);
 
         activateFireplace.SetActive(true);
+
+        // start the radio
+        radio.Play();
     }
 
     private void PlayFireplaceAmbience()

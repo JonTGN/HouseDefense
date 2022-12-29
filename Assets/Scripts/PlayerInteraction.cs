@@ -13,7 +13,7 @@ public class PlayerInteraction : MonoBehaviour
 
     // local gameobjects player has
     private bool hasMatches;
-    private bool alreadyLitFireplace;
+    public bool alreadyLitFireplace;
 
     private void Update()
     {

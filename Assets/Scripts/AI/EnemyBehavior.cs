@@ -32,7 +32,7 @@ public class EnemyBehavior : MonoBehaviour
     private float attackLength;
     [SerializeField]
     private float timeBetweenAttacks;
-    private bool alreadyAttacked;
+    public bool alreadyAttacked;
 
 
     // States
@@ -43,6 +43,12 @@ public class EnemyBehavior : MonoBehaviour
 
     [SerializeField]
     private Director levelDirector;
+
+    public AudioClip[] zombie_ambience;
+    private AudioClip currentClip;
+    public AudioSource source;
+    public float minWaitTime, maxWaitTime;
+    float waitTime;
 
     private void Awake()
     {
@@ -58,8 +64,23 @@ public class EnemyBehavior : MonoBehaviour
         playerInAttackRnage = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
         if (!playerInSightRange && !playerInAttackRnage) Patroling();
-        if (playerInSightRange && !playerInAttackRnage) ChasePlayer();
+        if (playerInSightRange && !playerInAttackRnage && !alreadyAttacked) ChasePlayer();
         if (playerInAttackRnage && playerInSightRange) AttackPlayer();
+
+        // sound mngr
+        if (!source.isPlaying)
+        {
+            if (waitTime < 0f)
+            {
+                currentClip = zombie_ambience[Random.Range(0, zombie_ambience.Length)];
+                source.clip = currentClip;
+                source.Play();
+                waitTime = Random.Range(minWaitTime, maxWaitTime);
+            }
+
+            else 
+                waitTime -= Time.deltaTime;
+        }
     }
 
     // probably will never use, nice to have though
@@ -96,7 +117,7 @@ public class EnemyBehavior : MonoBehaviour
         agent.SetDestination(player.position);
 
         // fix bug where if you move slightly during attack ai will pause until <timeinbetweenattacks> var is complete
-        alreadyAttacked = false;
+        //alreadyAttacked = false;
 
         // Cancel current invokes to prevent later issues
         CancelInvoke();

@@ -43,13 +43,27 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int health;
 
+    public AudioSource player_hurt;
+    public CameraShake cameraShake;
+    public float cameraShakeMagnitude;
+
     protected int Health 
     {
         get => health;
         set
         {
-            // play audio of gettign hit here
             health = value;
+
+            
+            // play audio of gettign hit here 
+            //todo: make list of hurt sounds and set clip in audio source
+            if (health != 100)
+            {
+                player_hurt.Play();
+                StartCoroutine(cameraShake.Shake(0.1f, cameraShakeMagnitude));
+            }
+            
+            
             HealthChanged?.Invoke(health);
             if(health == 0)
                 SceneManager.LoadScene("DeathScene");
