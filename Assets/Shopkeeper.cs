@@ -12,6 +12,8 @@ public class Shopkeeper : MonoBehaviour
     public InventoryManager inventory;
     [Header("Controls")]
     public PlayerInput input;
+    [Header("Director")]
+    public Director levelManager;
 
 
     [Header("Weapon StatBlocks")]
@@ -67,7 +69,8 @@ public class Shopkeeper : MonoBehaviour
         else
             weight = 0;
 
-        Wallet = 10000;
+        // Take from director
+        Wallet = levelManager.wallet;
     }
 
     private int EnumToWeight(Guns weapon)
@@ -259,6 +262,9 @@ public class Shopkeeper : MonoBehaviour
         gameObject.SetActive(false);
         inventory.EnumToWeapon(inventory.currentGun).GetComponent<WeaponClass>().readyToShoot = true;
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Take from director
+        levelManager.wallet = Wallet;
     }
 
 

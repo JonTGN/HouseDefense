@@ -8,6 +8,9 @@ using UnityEngine.SceneManagement;
 public class Director : MonoBehaviour
 {
     [SerializeField]
+    public int wallet = 0;
+
+    [SerializeField]
     public int Round = 1;
 
     [SerializeField]
@@ -113,6 +116,7 @@ public class Director : MonoBehaviour
 
     public void RemoveEnemy(EnemyClass instance)
     {
+        wallet += (int)Random.Range(15, 25);
         Enemies.Remove(instance);
         
         StartCoroutine(DestroyEnemyGameObjectIEnum(instance, bodyTimer));
