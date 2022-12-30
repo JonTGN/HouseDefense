@@ -13,7 +13,7 @@ public class OpenShop : MonoBehaviour, IInteractable
 
     public string GetDescription()
     {
-          return "Press E to Open Shops";
+          return "Press E to Open Shop";
     }
 
     public void Interact()
@@ -23,6 +23,7 @@ public class OpenShop : MonoBehaviour, IInteractable
         ShopUI.SetActive(true);
         input.enabled = false;
         Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
 
         // also pls hide waypoint when shop inactive :)
     }
